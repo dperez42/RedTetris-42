@@ -20,12 +20,16 @@
         <div v-for="(game, index) in this.game.players" :key="index">
           
           <div v-if=" this.game.players[index].socket == socket_id" class="tetris-board">
-          <Game  :room_name="this.game.name" :game="this.game.players[index]" />
+          <Game  :room_name="this.game.name" :game="this.game.players[index]" :type="this.game.isOnePlayer"/>
             <!-- Aquí iría el componente Tetris grande -->
           </div>
         </div>
-        <button v-if="this.game.players[0].socket == socket_id & !this.game.isCountdown " class="start-button" 
-        @click="clickStart()">Start</button>
+        <button v-if="this.game.players[0].socket == socket_id & !this.game.isCountdown & !this.game.isStart" 
+        class="start-button" @click="clickStart()" @keydown.space.prevent>Start</button>
+        <button v-if="this.game.players[0].socket == socket_id & !this.game.isCountdown & this.game.isStart" 
+        class="start-button" @click="clickPause()" @keydown.space.prevent>{{this.game.isPause ? "Continue":"Pause"}}</button>
+        <button v-if="this.game.players[0].socket == socket_id & !this.game.isCountdown & this.game.isStart" 
+        class="start-button" @click="clickReStart()" @keydown.space.prevent>ReStart</button>
       </div>
     </div>
 
@@ -34,6 +38,13 @@
       <div class="popup_countdown">    
         <h1>{{ this.game.name }}</h1>
         <h3 class="popup_count"> Start in {{ this.game.countdown }} seconds...</h3>
+      </div>
+    </div>
+    <!-- pop up finish -->
+    <div v-if="this.game != null & this.game.isFinish" class="overlay_countdown">
+      <div class="popup_countdown">    
+        <h1>{{ this.game.name }}</h1>
+        <h3 class="popup_count">{{this.game.winner_socket === socket_id ? 'YOU WIN':'The game is finsh'}}</h3>
       </div>
     </div>
 
@@ -137,16 +148,36 @@ export default {
       console.log("send", msg)
       socket.emit('red_tetris_server',msg)
     },
+    clickPause(){
+      console.log("click Pause")
+      const msg = {
+        command: 'pause',
+        gameName: this.game.name
+      }
+      console.log("send", msg)
+      socket.emit('red_tetris_server',msg)
+    },
+    clickReStart(){
+      console.log("click ReStart")
+      const msg = {
+        command: 'restart',
+        gameName: this.game.name
+      }
+      console.log("send", msg)
+      socket.emit('red_tetris_server',msg)
+    },
     keyHandler(event){
-      if (['Enter',  'ArrowDown',  'ArrowUp',  'ArrowRight',  'ArrowLeft', ' ','Escape'].indexOf(event.key) > -1) {
-        const msg = {
-          command: 'move',
-          gameName: this.game.name,
-          playerSocket: this.socket_id,
-          move: event.key
-        }
-        if (this.game.isStart){
-          socket.emit('red_tetris_server', msg);
+      if (!this.game.isPause){
+        if (['ArrowDown',  'ArrowUp',  'ArrowRight',  'ArrowLeft', ' ','Escape'].indexOf(event.key) > -1) {
+          const msg = {
+            command: 'move',
+            gameName: this.game.name,
+            playerSocket: this.socket_id,
+            move: event.key
+          }
+          if (this.game.isStart){
+            socket.emit('red_tetris_server', msg);
+          }
         }
       }
     }
@@ -265,26 +296,28 @@ export default {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.8); /* optional dim background */
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.75); /* optional dim background */
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 9999; /* ensures it appears on top */
+  animation: fadeIn 0.4s ease;
 }
 .popup_countdown {
   width: 300px;
   height: 200px;
-  background: radial-gradient(circle at top left, #ffffff, #b30000);
+  /*background: radial-gradient(circle at top left, #ffffff, #b30000);*/
+  background: #222;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border-radius: 15px;
   text-align: center;
   color: white;
-  box-shadow: 0 0 125px rgba(255, 0, 0, 0.6);
+  border: 2px solid #0ff;
+  border-radius: 8px;
   padding: 20px;
   z-index: 9999;
   animation: pulseGlow 2s infinite alternate ease-in-out;
@@ -295,12 +328,16 @@ export default {
   margin-bottom: 10px;
   text-shadow: 2px 2px 6px rgba(0,0,0,0.3);
 }
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
 @keyframes pulseGlow {
   0% {
-    box-shadow: 0 0 125px rgba(255, 0, 0, 0.4);
+    box-shadow: 0 0 125px rgba(0, 255, 255, 0.4);
   }
   100% {
-    box-shadow: 0 0 125px rgba(255, 0, 0, 0.9);
+    box-shadow: 0 0 125px rgba(0, 255, 255, 0.9);
   }
 }
 

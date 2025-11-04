@@ -13,6 +13,7 @@ class ClassTipo {
 		this.color = 1
 		this.nb_piece = 1
 		this.score = 0
+		this.penalty_lines = 0 // lines to penalt to others players
 		this.GameOver = false
 	}
 
@@ -29,6 +30,7 @@ class ClassTipo {
 		this.color = 1
 		this.nb_piece = 1
 		this.score = 0
+		this.penalty_lines = 0
 		this.GameOver = false
 	}
 
@@ -43,6 +45,7 @@ class ClassTipo {
 		this.color = 1 + Math.floor(Math.random() * 4)
 		this.nb_piece = 1
 		this.score = 0
+		this.penalty_lines = 0
 		this.GameOver = false
 	}
 	checkGameOver(field) {
@@ -96,7 +99,7 @@ class ClassTipo {
 				}
 			}
 		}
-		console.log("cleared ", linesCleared)
+		//console.log("cleared ", linesCleared)
 		return linesCleared;	
 	}
 	// set piece in field
@@ -127,7 +130,8 @@ class ClassTipo {
 		this.nb_piece = this.nb_piece + 1
 		// call check GameOver
 		this.GameOver = this.checkGameOver(field)
-		if (this.GameOver){console.loj("")}
+		this.penalty_lines = 0
+		//if (this.GameOver){console.loj("")}
 	}
 	getNb_piece(){
 		return this.nb_piece
@@ -135,8 +139,11 @@ class ClassTipo {
 	getScore(){
 		return this.score
 	}
-	getGameStatus(){
+	getGameOver(){
 		return this.GameOver 
+	}
+	getPenaltyLines(){
+		return this.penalty_lines
 	}
 	// rotate
 	rotate(field){
@@ -165,6 +172,7 @@ class ClassTipo {
 	}
 	// gravity
 	down(gravity, list_pieces, field, freeze_lines){
+		this.penalty_lines = 0
 		//console.log("calling down", this.score)
 		//console.log("calling down",this.nb_piece, "--", list_pieces[this.nb_piece])
 		this.y += gravity;
@@ -175,9 +183,11 @@ class ClassTipo {
 			// Merge piece in field
 			this.addPieceToField(field, list_pieces)
 			// check full lines
-			console.log("before:",this.score)
-			this.score = this.score + this.clearlines(field, freeze_lines)
-			console.log("after:",this.score)
+			//console.log("before:",this.score)
+			const lines_cleared = this.clearlines(field, freeze_lines)
+			this.score = this.score + lines_cleared
+			this.penalty_lines = lines_cleared  // - 1 
+			//console.log("piece penalty:",this.penalty_lines)
 		}
 	}
 	// softdrop

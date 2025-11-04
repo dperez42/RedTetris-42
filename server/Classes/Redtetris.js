@@ -4,6 +4,7 @@ class Games {
 	constructor() { 
 		console.log("init class Redtetris")
 		this.games = []
+		this.HallOfFame=[]
 		/*
 		[
 		{ 	name,  game name

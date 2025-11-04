@@ -36,7 +36,11 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 //app.use(express.static(__dirname + "/../client/dist/"));a
-app.use('/assets', express.static(path.join(__dirname + '/../public/assets')));
+// directory to serve files
+//app.use('/assets', express.static(path.join(__dirname + '/../public/assets')));
+app.use(express.static(path.join(__dirname, "html_error")));      // html errors
+app.use(express.static(path.join(__dirname, "dist")));   // Aplication directory
+
 app.disable('etag') //disable etag to avoid 304 during development
 
 // Socket configuration
@@ -103,6 +107,18 @@ io.on("connection", async (socket) => {
       console.log("game",game)
       game.startCountdown(io)      
     }
+    if (data.command==='pause'){
+      console.log("recieve pause", data.gameName)
+      // search game by name
+      const game = redtetris.getGame(data.gameName)
+      game.pause()      
+    }
+    if (data.command==='restart'){
+      console.log("recieve pause", data.gameName)
+      // search game by name
+      const game = redtetris.getGame(data.gameName)
+      game.init(io)      
+    }
     if (data.command==='move'){
       //console.log("recieve move", data)
       // search game by name
@@ -116,7 +132,7 @@ io.on("connection", async (socket) => {
     }
     //console.log("send end")
   });
-  socket.on("di sconnect", () => {
+  socket.on("disconnect", () => {
     console.log("socket disconnect",socket.id)
     const game = redtetris.getGameBySocket(socket.id)
     if (game){
@@ -174,6 +190,20 @@ io.on("connection", async (socket) => {
 });
 */
 // this send back the game page /// 
+app.get("/:room/:user", (req, res) => {
+  const params = req.params;
+  console.log("Parameters:", params);
+  console.log("Number of parameters:", Object.keys(params).length);
+  console.log(path.resolve(__dirname, "dist", "index.html"));
+    res.sendFile(path.resolve(__dirname, "dist", "index.html"));
+  
+});
+
+// Catch-all for other routes
+app.get(/(.*)/, (req, res) => {
+  res.sendFile(path.join(__dirname, "html_error", "user_name.html"));
+});
+/*
 app.get("/:user/:pp", (req, res, next) => {
   console.log("params",req.params.pp, req.params.user)
     // do the checks of rooms and player in join(socket)
@@ -194,90 +224,13 @@ app.get("/:user/:pp", (req, res, next) => {
           return res.end('Error loading index.html')
         }
       })
-  /*
-  console.log("redirect", req.params.room)
-  const query = {
-          "a": 1,
-          "b": 2,
-          "valid":"your string here"
-      };
-  res.query = query
-  res.redirect('/')
-  */
-  //next()
-  /*
-  const room_name = req.params.room 
-  const player_name = req.params.player
-  console.log("[/:room/:player].",room_name, player_name)
-  // check if there are game
-  console.log("[/:room/:player]. exist game?")
-  const nb_games = redtetris.lenGame()
-  let games_exist = true
-  if (nb_games===0){
-    games_exist = false
-  }
-  // check if rooms exist or not
-  // Game no exists
-  if (!redtetris.checkGame(room_name)){
-    console.log("[/:room/:player]. creating game.You are admin")
-    const game = new Game(room_name)
-    const player = new Player(10,20, player_name)
-    game.addPlayer(player)
-    redtetris.addGame(game)
-    const file = '/../client/dist/index.html'
-    fs.readFile(__dirname + file, (err, data) => {
-        if (err) {
-          console.log(err)
-          res.writeHead(500)
-          return res.end('Error loading index.html')
-        }
-        res.writeHead(200)
-        res.end(data)
-      })
-    //res.send({"success":true, "msg":"game created"});
-    //res.sendFile('index.html', {'root': __dirname + '/../client/dist/'});
-    console.log("Redtetris sstatus:", redtetris.info()) 
-    //next()
-  } else { // id exists check if is started
-    console.log("[/:room/:player]. adding game?")
-    const my_game = redtetris.getGame(room_name)
-    // check if player is in game
-    if (my_game.checkPlayer(player_name)) {
-        res.send({"success":true, "msg":"just in game"});
-        console.log("Redtetris sstatus:", redtetris.info())
-        return
-    }
-    console.log("start",my_game.isStart)
-    if (my_game.isStart) { 
-      res.send({"success":false, "msg":"game started"});
-      return
-    } else { //JOIN TO GAME
-      const my_player = new Player(10,20, player_name)
-      my_game.addPlayer(my_player)
-      console.log("Redtetris status:", redtetris.info())
-      res.send({"success":true, "msg":"join to game"});
-      return
-    }
-
-  } 
-  console.log("nb of games", redtetris.lenGame())
-  
-  return
-  */
 });
-
-
-/*
-app.get("/list", (req, res) => {
-   res.sendFile('index.html', {'root': __dirname + '/../client/dist/'});
-});
-app.get("/create", (req, res) => {
-   res.sendFile('index.html', {'root': __dirname + '/../client/dist/'});
-});
-app.get("/game", (req, res) => {
-   res.sendFile('index.html', {'root': __dirname + '/../client/dist/'});
+app.get("/game_started", (req, res) => {
+  //res.sendFile(path.join(__dirname, "html_error", "game_started.html"));
+  res.sendFile(path.join(__dirname, "html_error", "user_name.html"));
 });
 */
+
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

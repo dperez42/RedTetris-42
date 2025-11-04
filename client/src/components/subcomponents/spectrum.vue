@@ -6,9 +6,9 @@
   </div>
   <!-- Board -->
   <div class="board">
-		<div v-for="(row, y) in this.transpose_matrix(this.game.field_piece)"  :key="y">
+		<div v-for="(row, y) in this.transpose_matrix(this.game.field)"  :key="y">
       <div v-for="(cell, x) in row"  :key="x" >
-        <div class="cell" :style="{backgroundColor: getcolour(cell) || '#222'}">
+        <div class="cell" :style="{backgroundColor: isEmpty(x)}">
         </div>
       </div>
     </div>
@@ -57,6 +57,15 @@ export default {
     },
     transpose_matrix(matrix){
       return matrix[0].map((_, x) => matrix.map(row => row[x]))
+    },
+    isEmpty(row){
+      let empty = '#ffffff'
+      this.game.field[row].forEach(cell => {
+        if (cell > 0) {
+          empty = '#8ac926'
+        }
+      })
+      return empty
     }
 
   },
