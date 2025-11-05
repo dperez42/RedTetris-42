@@ -1,22 +1,11 @@
 const { Socket } = require("socket.io")
+const Score = require("./Score.js");
 
 class Games {
 	constructor() { 
 		console.log("init class Redtetris")
 		this.games = []
-		this.HallOfFame=[]
-		/*
-		[
-		{ 	name,  game name
-			admin, username admin
-			sockets, list of sockets players
-		 	players[], list of players
-			list_pieces[], list of pieces
-			isStart (false/true), 
-		},
-		...
-		]
-		*/
+		this.score = new Score()
 	}
 	addGame(game){
 		this.games.push(game)

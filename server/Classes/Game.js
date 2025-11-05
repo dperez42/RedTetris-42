@@ -26,33 +26,6 @@ class Game {
 		this.ghost_mode = false
 		this.countdown = 5
 		this.intervalCountdown = null
-
-		console.log("mode", mode, ghost_mode)
-		this.resultsFile = path.join(process.cwd(), "results.json");
-	}
-	// add result to a file "results.json"
-	saveResult() {
-		const result = {
-		  game: this.name,
-		  winner: this.winner,
-		  date: new Date().toISOString(),
-		  players: this.players.map(p => ({
-			  name: p.name,
-			  score: p.score
-		  })),
-		};
-	
-		try {
-		  let results = [];
-		  if (fs.existsSync(this.resultsFile)) {
-			results = JSON.parse(fs.readFileSync(this.resultsFile, "utf-8"));
-		  }
-		  results.push(result);
-		  fs.writeFileSync(this.resultsFile, JSON.stringify(results, null, 2));
-		  console.log("✅ Game result saved:", result);
-		} catch (err) {
-		  console.error("❌ Error saving result:", err);
-		}
 	}
 
 	gamelogic(io){
@@ -92,22 +65,16 @@ class Game {
 			// check if is a several players game o one player game
 			if (this.isOnePlayer){
 				if (nb_online_players===0) {
-					console.log("only one winner")
 					clearInterval(this.intervalGame)
 					this.sendUpdate(io)
-					//console.lof("")
 				}
 			} else {
 				if (nb_online_players === 1){
-					console.log("we have a winner")
 					clearInterval(this.intervalGame)
 					// set game to finish and load results and comunicate finish to all 
 					this.isFinish = true
-					//this.saveResult(); // ✅ save result
-					console.log(this.winner)
 					// to display pop up 
 					this.sendUpdate(io)
-					console.log("  fff")
 				}
 			}		
 			// send update

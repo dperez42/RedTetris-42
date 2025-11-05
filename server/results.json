@@ -2,49 +2,31 @@
   {
     "game": "test_room",
     "winner": "test_player",
-    "date": "2025-11-03T18:29:10.938Z",
+    "date": "2025-11-03T18:24:05.465Z",
     "players": [
-      "test_player",
-      "test_player1"
-    ]
-  },
-  {
-    "game": "test_room3",
-    "winner": "test_player10",
-    "date": "2025-11-03T18:30:24.377Z",
-    "players": [
-      "test_player",
-      "test_player10"
-    ]
-  },
-  {
-    "game": "test_room23",
-    "winner": "test_player",
-    "date": "2025-11-03T18:33:57.840Z",
-    "players": [
-      {
-        "name": "test_player",
-        "score": 3
-      },
-      {
-        "name": "test_player30",
-        "score": 0
-      }
+      {"name": "test_player", "score": 1},
+      {"name": "test_player2", "score": 5},
+      {"name": "test_player10", "score": 3}
     ]
   },
   {
     "game": "test_room",
     "winner": "test_player",
-    "date": "2025-11-03T18:40:55.696Z",
+    "date": "2025-11-03T18:24:05.465Z",
     "players": [
-      {
-        "name": "test_player",
-        "score": 2
-      },
-      {
-        "name": "test_player3",
-        "score": 0
-      }
+      {"name": "test_player", "score": 1},
+      {"name": "test_player2", "score": 5},
+      {"name": "test_player10", "score": 3}
+    ]
+  },
+  {
+    "game": "test_room",
+    "winner": "test_player",
+    "date": "2025-11-03T18:24:05.465Z",
+    "players": [
+      {"name": "test_player", "score": 1},
+      {"name": "test_player2", "score": 5},
+      {"name": "test_player10", "score": 3}
     ]
   }
 ]

@@ -20,7 +20,7 @@ let redtetris = new Redtetris()
 
 // get config vars
 dotenv.config({path: __dirname + '/.env'})
-console.log(process.env)
+//console.log(process.env)
 const PORT = process.env.SERVER_PORT || 1337;
 console.log(PORT)
 
