@@ -74,7 +74,7 @@ io.on("connection", async (socket) => {
         // Check if Game exists?
         if (!room_exists){
           console.log("creating game.", data.roomName)
-          const game = new Game(data.roomName, 1)
+          const game = new Game(data.roomName)
           console.log("Player:", data.playerName, " init Room:", data.roomName)
           const player = new Player(10,20, data.playerName,socket.id)
           game.addPlayer(player, socket.id) // quito este array socketid
@@ -101,9 +101,10 @@ io.on("connection", async (socket) => {
         
     }
     if (data.command==='start'){
-      console.log("recieve startCountdown", data.gameName)
+      console.log("recieve startCountdown", data)
       // search game by name
       const game = redtetris.getGame(data.gameName)
+      game.setmode(data.mode, data.ghost_mode)
       console.log("game",game)
       game.startCountdown(io)      
     }
@@ -123,10 +124,11 @@ io.on("connection", async (socket) => {
       //console.log("recieve move", data)
       // search game by name
       const game = redtetris.getGame(data.gameName)
+      const ghost_mode = game.getGhostMode()
       //console.log(game)
       const player = game.getPlayerBySocket(data.playerSocket)
       //console.log(player)
-      player.movePiece(data.move)
+      player.movePiece(data.move,1,[],ghost_mode)
       // send update msg to all player in the game
       game.sendUpdate(io)
     }

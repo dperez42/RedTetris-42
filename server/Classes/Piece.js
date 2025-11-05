@@ -103,7 +103,7 @@ class ClassTipo {
 		return linesCleared;	
 	}
 	// set piece in field
-	addPieceToField(field, list_pieces, nb_piece){
+	addPieceToField(field, list_pieces){
 		for (let i = this.y; i < this.y + this.height; i++){
 			for (let j = this.x; j < (this.x +  this.width); j++){
 			   //// solo pinta lo que esta dentro de los limites

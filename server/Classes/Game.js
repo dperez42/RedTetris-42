@@ -3,7 +3,7 @@ const fs = require("fs");
 const path = require("path");
 
 class Game {
-	constructor(name, gravity) { 
+	constructor(name, mode, ghost_mode) { 
 		console.log("init class Game")
 		this.name = name
 		this.admin = null
@@ -22,9 +22,12 @@ class Game {
 		this.winner_socket = null
 		this.intervalGame = null
 		this.countGame = 200 // for testing purpose
-		this.gravity = gravity
+		this.gravity = 500
+		this.ghost_mode = false
 		this.countdown = 5
 		this.intervalCountdown = null
+
+		console.log("mode", mode, ghost_mode)
 		this.resultsFile = path.join(process.cwd(), "results.json");
 	}
 	// add result to a file "results.json"
@@ -59,7 +62,7 @@ class Game {
 			let nb_online_players = 0 
 			// move pieces
 			this.players.forEach(player => {
-				player.movePiece('down', this.gravity, this.list_pieces)
+				player.movePiece('down', 1, this.list_pieces, this.ghost_mode)
 			});
 			this.players.forEach(player => {
 				// check list of pieces if more pieces are needed
@@ -165,6 +168,7 @@ class Game {
 			}
 		});
 		// add first piece to all
+		console.log(this.list_pieces)
 		this.players.forEach(player => {
 			player.addFirstPiece(this.list_pieces)
 		});
@@ -172,9 +176,10 @@ class Game {
 		this.sendUpdate(io)
 
 		// start interval of game logic
-		
+		console.log("starting game",this.gravity)
 		this.intervalGame = setInterval(() => {
 			//this.countGame--
+			console.log("difficult", this.gravity)
 			this.gamelogic(io)
 			/*
 			if (this.countGame<0){
@@ -183,7 +188,7 @@ class Game {
 				console.log("Interval stopped");
 			}
 			*/
-		},400)
+		},this.gravity)
 	}
 	pause(){
 		console.log("game pause")
@@ -217,6 +222,10 @@ class Game {
 		});
 		// send update
 		this.sendUpdate(io)
+	}
+	setmode(mode, ghost_mode){
+		this.gravity=mode,
+		this.ghost_mode=ghost_mode
 	}
 	startCountdown(io){
 		console.log(`Countdown of ${this.name}: ${this.countdown}`);
@@ -338,6 +347,9 @@ class Game {
 	}
 	getNbPieces(){
 		return this.list_pieces.length	
+	}
+	getGhostMode(){
+		return this.ghost_mode
 	}
 }
 

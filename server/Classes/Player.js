@@ -34,7 +34,7 @@ class ClassTipo {
 		this.piece = newPiece;
 	}
 
-	movePiece(move, gravity, list_pieces){
+	movePiece(move, step, list_pieces, ghost_mode){
 		if (!this.gameOver){
 			this.penalty_lines = 0
 			if (move==='ArrowLeft') {this.piece.left(this.field)}
@@ -42,7 +42,7 @@ class ClassTipo {
 			if (move==='ArrowUp') {this.piece.rotate(this.field)}
 			if (move==='ArrowDown') {this.piece.softDrop(this.field)}
 			if (move===' ') {this.piece.hardDrop(this.field)}
-			if (move==='down') {this.piece.down(gravity,list_pieces, this.field, this.freeze_lines)}
+			if (move==='down') {this.piece.down(step,list_pieces, this.field, this.freeze_lines)}
 			//if (move==='Scape') {this.piece.right()}
 			this.nb_piece = this.piece.getNb_piece()
 			this.score = this.piece.getScore()
@@ -52,7 +52,7 @@ class ClassTipo {
 			if (this.gameOver){
 				console.log("GAME OVER")
 			}
-			this.merge()
+			this.merge(ghost_mode)
 		}
 		return
 	}
@@ -77,23 +77,25 @@ class ClassTipo {
 		 console.log()
 		}
 	}
-	merge(){
+	merge(ghost_mode){
 		let field_temp = Array.from({ length: this.sizeRow }, () => Array(this.sizeColumn).fill(0));
 		for (let i = 0; i < this.sizeRow; i++){
          for (let j = 0; j < this.sizeColumn; j++){
                 field_temp[i][j]=this.field[i][j];
 		 }
 		}
-		for (let i = this.piece.y; i < this.piece.y + this.piece.height; i++){
-         for (let j = this.piece.x; j < (this.piece.x +  this.piece.width); j++){
-            //// solo pinta lo que esta dentro de los limites
-			if ((i >=0 & i <20) & (j>=0 & j <10)){
-				//field_temp[i][j]=0;
-				if (this.piece.data[i-this.piece.y][j-this.piece.x]===1){
-					field_temp[i][j]=this.piece.color;
+		if (!ghost_mode || this.piece.y<2 ){ 
+			for (let i = this.piece.y; i < this.piece.y + this.piece.height; i++){
+			for (let j = this.piece.x; j < (this.piece.x +  this.piece.width); j++){
+				//// solo pinta lo que esta dentro de los limites
+				if ((i >=0 & i <20) & (j>=0 & j <10)){
+					//field_temp[i][j]=0;
+					if (this.piece.data[i-this.piece.y][j-this.piece.x]===1){
+						field_temp[i][j]=this.piece.color;
+					}
 				}
 			}
-		 }
+			}
 		}
 		this.field_piece = field_temp
 	}

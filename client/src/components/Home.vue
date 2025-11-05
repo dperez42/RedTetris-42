@@ -24,6 +24,28 @@
             <!-- Aquí iría el componente Tetris grande -->
           </div>
         </div>
+        <!-- 🔥 Línea de botones de modo -->
+        <div
+          v-if="this.game.players[0].socket == socket_id && !this.game.isCountdown && !this.game.isStart"
+          class="mode-buttons"
+        >
+          <button
+            v-for="m in modes"
+            :key="m.value"
+            :class="{ active: mode === m.value }"
+            @click="clickMode(m.value)"
+          >
+           {{ m.label }}
+          </button>
+          <button
+            v-for="m in especial_modes"
+            :key="m.value"
+            :class="{ active: this.ghost_mode === true }"
+            @click="clickEspecialMode()"
+          >
+           {{ m.label }}
+          </button>
+        </div>
         <button v-if="this.game.players[0].socket == socket_id & !this.game.isCountdown & !this.game.isStart" 
         class="start-button" @click="clickStart()" @keydown.space.prevent>Start</button>
         <button v-if="this.game.players[0].socket == socket_id & !this.game.isCountdown & this.game.isStart" 
@@ -44,7 +66,7 @@
     <div v-if="this.game != null & this.game.isFinish" class="overlay_countdown">
       <div class="popup_countdown">    
         <h1>{{ this.game.name }}</h1>
-        <h3 class="popup_count">{{this.game.winner_socket === socket_id ? 'YOU WIN':'The game is finsh'}}</h3>
+        <h3 class="popup_count">{{this.game.winner_socket === socket_id ? 'YOU WIN':'The game is finish'}}</h3>
       </div>
     </div>
 
@@ -108,7 +130,17 @@ export default {
       roomName:'test_room',
       playerName:"test_player",
       visible: true,
-      count: 10
+      count: 10,
+      modes : [
+        { label: "🟢 Easy", value: "easy" },
+        { label: "🟠 Medium", value: "medium" },
+        { label: "🔴 Hard", value: "hard" },
+      ],
+      especial_modes : [
+        { label: "👻 Ghost", value: "ghost" },
+      ],
+      mode : 'medium',
+      ghost_mode : false
     }
   },
   methods: {
@@ -143,7 +175,9 @@ export default {
       console.log("click Start")
       const msg = {
         command: 'start',
-        gameName: this.game.name
+        gameName: this.game.name,
+        mode : this.mode === 'medium' ? 500: this.mode === 'hard' ? 250:1000,
+        ghost_mode: this.ghost_mode
       }
       console.log("send", msg)
       socket.emit('red_tetris_server',msg)
@@ -161,10 +195,18 @@ export default {
       console.log("click ReStart")
       const msg = {
         command: 'restart',
-        gameName: this.game.name
+        gameName: this.game.name,
+        mode : this.mode === 'medium' ? 500: this.mode === 'hard' ? 250:1000,
+        ghost: this.ghost_mode
       }
       console.log("send", msg)
       socket.emit('red_tetris_server',msg)
+    },
+    clickMode(mode){
+      this.mode = mode
+    },
+    clickEspecialMode(){
+      this.ghost_mode = !this.ghost_mode 
     },
     keyHandler(event){
       if (!this.game.isPause){
@@ -360,4 +402,50 @@ export default {
   }
 }
 
+/* Buttons*/
+.start-button {
+  background: #00bcd4;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  margin: 0.4rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.start-button:hover {
+  background: #00e5ff;
+  color: black;
+}
+
+.mode-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 0.6rem;
+  margin: 1rem 0;
+}
+
+.mode-buttons button {
+  background: #222;
+  color: #fff;
+  border: 2px solid #555;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+  font-size: 0.85rem;
+  font-family: system-ui, "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+}
+
+.mode-buttons button:hover {
+  background: #444;
+}
+
+.mode-buttons button.active {
+  background: #00e5ff;
+  color: #000;
+  border-color: #00e5ff;
+  box-shadow: 0 0 8px #00e5ff;
+}
 </style>
