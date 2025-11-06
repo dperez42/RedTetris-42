@@ -48,6 +48,8 @@
         </div>
         <button v-if="this.game.players[0].socket == socket_id & !this.game.isCountdown & !this.game.isStart" 
         class="start-button" @click="clickStart()" @keydown.space.prevent>Start</button>
+        <button v-if="!this.game.isCountdown & !this.game.isStart" 
+        class="start-button" @click="clickRanking()" @keydown.space.prevent>Ranking</button>
         <button v-if="this.game.players[0].socket == socket_id & !this.game.isCountdown & this.game.isStart" 
         class="start-button" @click="clickPause()" @keydown.space.prevent>{{this.game.isPause ? "Continue":"Pause"}}</button>
         <button v-if="this.game.players[0].socket == socket_id & !this.game.isCountdown & this.game.isStart" 
@@ -67,6 +69,28 @@
       <div class="popup_countdown">    
         <h1>{{ this.game.name }}</h1>
         <h3 class="popup_count">{{this.game.winner_socket === socket_id ? 'YOU WIN':'The game is finish'}}</h3>
+      </div>
+    </div>
+    <!-- pop up ranking -->
+    <div v-if="this.game != null & this.ranking" class="overlay_countdown">
+      <div class="popup_countdown">    
+        <h1>Hall of Fame</h1>
+        <div v-for="(user, x) in this.game.ranking"  :key="x" >
+          <div class="cell" :style="{
+          backgroundColor: '#222',  
+          border:  '3px solid #f00'
+          }">
+          {{user.name}} 
+          </div>  
+          <div class="cell" :style="{
+          backgroundColor: '#222',  
+          border:  '3px solid #f00'
+          }">
+           {{ user.score }}
+          </div>  
+      </div>
+        <button v-if="!this.game.isCountdown & !this.game.isStart" 
+        class="start-button" @click="clickRanking()" @keydown.space.prevent>Ranking</button>
       </div>
     </div>
 
@@ -140,7 +164,8 @@ export default {
         { label: "👻 Ghost", value: "ghost" },
       ],
       mode : 'medium',
-      ghost_mode : false
+      ghost_mode : false,
+      ranking: false
     }
   },
   methods: {
@@ -207,6 +232,9 @@ export default {
     },
     clickEspecialMode(){
       this.ghost_mode = !this.ghost_mode 
+    },
+    clickRanking(){
+      this.ranking = !this.ranking
     },
     keyHandler(event){
       if (!this.game.isPause){
@@ -447,5 +475,13 @@ export default {
   color: #000;
   border-color: #00e5ff;
   box-shadow: 0 0 8px #00e5ff;
+}
+.cell {
+  width: 20px;
+  height: 20px;
+  text-align: center;
+  border: 1px solid rgb(106, 106, 106);
+  border-radius: 3px;
+  box-shadow: 0 2px 5px rgba(255, 255, 255, 0.5);
 }
 </style>

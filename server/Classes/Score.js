@@ -73,7 +73,7 @@ class Score {
 		.map(([name, Score]) => ({ name, Score }))
 		.sort((a, b) => b.Score - a.Score);
   
-	  	console.log("🏆 Ranking calculado:", ranking);
+	  	//console.log("🏆 Ranking calculado:", ranking);
 	  	this.ranking = ranking
 	}
 	// get ranking

@@ -61,6 +61,9 @@ class Games {
 	info(){
 		return this.games
 	}
+	getRanking(){
+		return this.score.getRanking()
+	}
 }
 
 module.exports = Games;

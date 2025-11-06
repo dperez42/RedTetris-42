@@ -3,8 +3,9 @@ const fs = require("fs");
 const path = require("path");
 
 class Game {
-	constructor(name, mode, ghost_mode) { 
+	constructor(name, ranking) { 
 		console.log("init class Game")
+		console.log(ranking)
 		this.name = name
 		this.admin = null
 		this.sockets = []
@@ -13,6 +14,7 @@ class Game {
 		console.log(` creating initial list of pieces ...`);
 		this.list_pieces = []
 		this.addPieces(20)
+		this.ranking = ranking
 		this.isStart = false
 		this.isFinish = false
 		this.isCountdown = false
@@ -94,6 +96,7 @@ class Game {
 				//data.sockets = this.sockets 
 				data.players = this.players
 				data.list_pieces = this.list_pieces 
+				data.ranking = this.ranking 
 				data.isStart = this.isStart 
 				data.isFinish = this.isFinish
 				data.winner = this.winner 
