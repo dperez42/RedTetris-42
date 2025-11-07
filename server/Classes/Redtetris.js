@@ -61,8 +61,8 @@ class Games {
 	info(){
 		return this.games
 	}
-	getRanking(){
-		return this.score.getRanking()
+	getScore(){
+		return this.score
 	}
 }
 

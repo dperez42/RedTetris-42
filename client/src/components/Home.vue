@@ -20,41 +20,44 @@
       <div class="board-wrapper">
         <div v-for="(game, index) in this.game.players" :key="index">
           
-          <div v-if=" this.game.players[index].socket == socket_id" class="tetris-board">
+          <div v-if=" this.game.players[index].socket == socket_id" >
           <Game  :room_name="this.game.name" :game="this.game.players[index]" :type="this.game.isOnePlayer"/>
             <!-- Aquí iría el componente Tetris grande -->
           </div>
         </div>
         <!-- 🔥 Línea de botones de modo -->
-        <div
-          v-if="this.game.players[0].socket == socket_id && !this.game.isCountdown && !this.game.isStart"
-          class="mode-buttons"
-        >
-          <button
-            v-for="m in modes"
-            :key="m.value"
-            :class="{ active: mode === m.value }"
-            @click="clickMode(m.value)"
+        <!-- Botones centrados debajo del juego -->
+        <div class="buttons-wrapper">
+          <div
+            v-if="this.game.players[0].socket == socket_id && !this.game.isCountdown && !this.game.isStart"
+            class="mode-buttons"
           >
-           {{ m.label }}
-          </button>
-          <button
-            v-for="m in especial_modes"
-            :key="m.value"
-            :class="{ active: this.ghost_mode === true }"
-            @click="clickEspecialMode()"
-          >
-           {{ m.label }}
-          </button>
+            <button
+              v-for="m in modes"
+              :key="m.value"
+              :class="{ active: mode === m.value }"
+              @click="clickMode(m.value)"
+            >
+            {{ m.label }}
+            </button>
+            <button
+              v-for="m in especial_modes"
+              :key="m.value"
+              :class="{ active: this.ghost_mode === true }"
+              @click="clickEspecialMode()"
+            >
+            {{ m.label }}
+            </button>
+          </div>
+          <button v-if="this.game.players[0].socket == socket_id & !this.game.isCountdown & !this.game.isStart" 
+          class="start-button" @click="clickStart()" @keydown.space.prevent>Start</button>
+          <button v-if="!this.game.isCountdown & !this.game.isStart" 
+          class="start-button" @click="clickRanking()" @keydown.space.prevent>Ranking</button>
+          <button v-if="this.game.players[0].socket == socket_id & !this.game.isCountdown & this.game.isStart" 
+          class="start-button" @click="clickPause()" @keydown.space.prevent>{{this.game.isPause ? "Continue":"Pause"}}</button>
+          <button v-if="this.game.players[0].socket == socket_id & !this.game.isCountdown & this.game.isStart" 
+          class="start-button" @click="clickReStart()" @keydown.space.prevent>ReStart</button>
         </div>
-        <button v-if="this.game.players[0].socket == socket_id & !this.game.isCountdown & !this.game.isStart" 
-        class="start-button" @click="clickStart()" @keydown.space.prevent>Start</button>
-        <button v-if="!this.game.isCountdown & !this.game.isStart" 
-        class="start-button" @click="clickRanking()" @keydown.space.prevent>Ranking</button>
-        <button v-if="this.game.players[0].socket == socket_id & !this.game.isCountdown & this.game.isStart" 
-        class="start-button" @click="clickPause()" @keydown.space.prevent>{{this.game.isPause ? "Continue":"Pause"}}</button>
-        <button v-if="this.game.players[0].socket == socket_id & !this.game.isCountdown & this.game.isStart" 
-        class="start-button" @click="clickReStart()" @keydown.space.prevent>ReStart</button>
       </div>
     </main>
 
@@ -74,24 +77,22 @@
     </div>
     <!-- pop up ranking -->
     <div v-if="this.game != null & this.ranking" class="overlay_countdown">
-      <div class="popup_countdown">    
-        <h1>Hall of Fame</h1>
-        <div v-for="(user, x) in this.game.ranking"  :key="x" >
-          <div class="cell" :style="{
-          backgroundColor: '#222',  
-          border:  '3px solid #f00'
-          }">
-          {{user.name}} 
-          </div>  
-          <div class="cell" :style="{
-          backgroundColor: '#222',  
-          border:  '3px solid #f00'
-          }">
-           {{ user.score }}
-          </div>  
-      </div>
-        <button v-if="!this.game.isCountdown & !this.game.isStart" 
-        class="start-button" @click="clickRanking()" @keydown.space.prevent>Ranking</button>
+      <div class="popup_ranking">
+        <h1 class="ranking-title">🏆 HALL OF FAME 🏆</h1>
+        <div class="ranking-table crt-overlay">
+          <div v-for="(user, x) in this.game.ranking"  :key="x" >
+            <div class="ranking-name">{{ x + 1 }}. {{ user.name }}</div>
+            <div class="ranking-score">{{ user.score }}</div> 
+          </div>
+        </div>
+        <button
+      v-if="!this.game.isCountdown && !this.game.isStart"
+      class="retro-button"
+      @click="clickRanking()"
+      @keydown.space.prevent
+    >
+      CLOSE
+    </button>
       </div>
     </div>
 
@@ -183,9 +184,16 @@
   justify-content: center;
   align-items: center;
   background-color: rgb(173, 37, 37);
+  min-height: 100vh;        /* full viewport height */
 }
 
 .board-wrapper {
+  text-align: center;
+  display: flex;
+  flex-direction: column;  /* stack board + buttons */
+  justify-content: center;  /* center vertically inside wrapper */
+  align-items: center;      /* center horizontally */
+  gap: 1rem;
   text-align: center;
 }
 
@@ -199,8 +207,14 @@
   justify-content: center;
   align-items: center;
   border: 4px solid #333;
+  box-sizing: border-box;
 }
-
+.buttons-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
 .start-button {
   padding: 0.5rem 1.5rem;
   font-size: 1.2rem;
@@ -214,6 +228,62 @@
 .start-button:hover {
   background-color: #218838;
 }
+
+/* Buttons*/
+.buttons-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.start-button {
+  background: #00bcd4;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  margin: 0.4rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.start-button:hover {
+  background: #00e5ff;
+  color: black;
+}
+
+.mode-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 0.6rem;
+  margin: 1rem 0;
+}
+
+.mode-buttons button {
+  background: #222;
+  color: #fff;
+  border: 2px solid #555;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+  font-size: 0.85rem;
+  font-family: system-ui, "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+}
+
+.mode-buttons button:hover {
+  background: #444;
+}
+
+.mode-buttons button.active {
+  background: #00e5ff;
+  color: #000;
+  border-color: #00e5ff;
+  box-shadow: 0 0 8px #00e5ff;
+}
+
+/* pop up count down*/
 .overlay_countdown {
   position: fixed;
   top: 0;
@@ -282,51 +352,151 @@
   }
 }
 
-/* Buttons*/
-.start-button {
-  background: #00bcd4;
-  color: white;
-  border: none;
-  padding: 0.6rem 1.2rem;
-  margin: 0.4rem;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: 0.2s;
-}
 
-.start-button:hover {
-  background: #00e5ff;
-  color: black;
-}
 
-.mode-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 0.6rem;
-  margin: 1rem 0;
-}
-
-.mode-buttons button {
+.popup_ranking {
+  width: 320px;
+  height: 300px;
+  /*background: radial-gradient(circle at top left, #ffffff, #b30000);*/
   background: #222;
-  color: #fff;
-  border: 2px solid #555;
-  padding: 0.4rem 0.8rem;
-  border-radius: 6px;
-  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: white;
+  border: 2px solid #0ff;
+  border-radius: 8px;
+  padding: 20px;
+  z-index: 9999;
+  animation: pulseGlow 2s infinite alternate ease-in-out;
+}
+/* RANKING */
+/* Título brillante */
+.ranking-title {
+  font-size: 1.5em;
+  margin-bottom: 20px;
+  color: #ff004d;
+  text-shadow: 0 0 10px #ff004d, 0 0 20px #ff004d;
+  animation: neonPulse 1.8s infinite alternate;
+}
+
+/* Tabla de ranking */
+.ranking-table {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 15px;
+  max-height: 300px;      /* altura máxima antes de aparecer scroll */
+  overflow-y: auto;       /* barra de desplazamiento vertical */
+  
+  padding-right: 5px;     
+  scrollbar-width: thin;  
+  scrollbar-color: #0ff #111; 
+  
+}
+/* CRT scanlines + overlay */
+.crt-overlay {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Líneas horizontales tipo CRT */
+.crt-overlay::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.03),
+    rgba(255, 255, 255, 0.03) 2px,
+    transparent 2px,
+    transparent 4px
+  );
+  animation: flicker 0.2s infinite;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Brillo dinámico que se mueve verticalmente */
+.crt-overlay::after {
+  content: "";
+  position: absolute;
+  top: -100%;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.05) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: scan 4s linear infinite;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.ranking-row {
+  display: flex;
+  justify-content: space-between;
+  background: #111;
+  border: 2px solid #0ff;
+  padding: 8px;
+  border-radius: 4px;
   transition: 0.2s;
-  font-size: 0.85rem;
-  font-family: system-ui, "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
 }
 
-.mode-buttons button:hover {
-  background: #444;
-}
-
-.mode-buttons button.active {
-  background: #00e5ff;
+.ranking-row.top1 {
+  background: #ffcc00;
   color: #000;
-  border-color: #00e5ff;
-  box-shadow: 0 0 8px #00e5ff;
+  border-color: #fff700;
+  text-shadow: 0 0 6px #fff;
+}
+
+.ranking-row.top3 {
+  border-color: #ff004d;
+}
+
+.ranking-name {
+  text-align: left;
+  flex: 1;
+}
+
+.ranking-score {
+  text-align: right;
+  flex: 0 0 50px;
+}
+
+/* Botón retro */
+.retro-button {
+  background: #0ff;
+  color: #000;
+  font-family: "Press Start 2P", monospace;
+  padding: 8px 20px;
+  border: 3px solid #fff;
+  border-radius: 4px;
+  cursor: pointer;
+  text-transform: uppercase;
+  box-shadow: 0 0 10px #0ff;
+  transition: all 0.2s ease-in-out;
+}
+
+.retro-button:hover {
+  background: #ff004d;
+  color: #fff;
+  box-shadow: 0 0 20px #ff004d;
+}
+@keyframes neonPulse {
+  from {
+    text-shadow: 0 0 5px #ff004d, 0 0 10px #ff004d;
+  }
+  to {
+    text-shadow: 0 0 20px #ff004d, 0 0 40px #ff004d;
+  }
 }
 </style>
 

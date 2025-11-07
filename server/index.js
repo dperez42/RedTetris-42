@@ -74,7 +74,7 @@ io.on("connection", async (socket) => {
         // Check if Game exists?
         if (!room_exists){
           console.log("creating game.", data.roomName)
-          const game = new Game(data.roomName, redtetris.getRanking())
+          const game = new Game(data.roomName, redtetris.getScore())
           console.log("Player:", data.playerName, " init Room:", data.roomName)
           const player = new Player(10,20, data.playerName,socket.id)
           game.addPlayer(player, socket.id) // quito este array socketid

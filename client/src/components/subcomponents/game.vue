@@ -1,29 +1,28 @@
 <template>
   <div class="tetris">
-  <!-- Room Name -->
-  <div class="status">
-      <span class="roomname">{{room_name}} nb:{{this.game.gameOver}}</span>
-  </div>
+  <!-- Info del jugador dentro del tablero -->
+    <div class="tetris-info">
+      <div class="roomname">{{ room_name }}</div>
+      <div class="username">Player: {{ game.name }}</div>
+      <div class="score">Score: {{ game.score }}</div>
+    </div>
   <!-- Board -->
-  <div class="board">
-		<div v-for="(row, y) in this.transpose_matrix(this.game.field_piece)"  :key="y">
-      <div v-for="(cell, x) in row"  :key="x" >
-        <div class="cell" :style="{
-          backgroundColor: getcolour(cell) || '#222',  
-          border: 19 - x < this.game.freeze_lines ? '3px solid #f00' : '1px solid #111'
-          }"
-        
-        >
-          {{cell}}
+    <div class="board">
+      <div class="row" v-for="(row, y) in this.transpose_matrix(this.game.field_piece)"  :key="y">
+        <div v-for="(cell, x) in row"  :key="x" >
+          <div class="cell" :style="{
+            '--cell-color': getcolour(cell) || '#222',
+            border: 19 - x < this.game.freeze_lines ? '3px solid #f00' : getcolour(cell) === '#ffffff' ? '3px solid #000' : '3px solid '+darkenColor(getcolour(cell), 0.6),
+            animation: getcolour(cell) === '#ffffff' ? 'none' : 'pulseCell 1.5s infinite alternate ease-in-out' /* pulseCell, pulseNeon*/
+            }"
+          
+          >
+          <!--{{cell}}-->
+          </div>
         </div>
       </div>
-		</div>
-  </div>
-  <!--- Score and username-->
-    <div class="status">
-      <span class="username">{{this.game.name}}</span>
-      <span class="score"> Score: {{this.game.score}}</span>
     </div>
+ 
   
   <!-- pop up game over -->
     <div v-if="this.game.gameOver" class="overlay_gameover">
@@ -70,6 +69,15 @@ export default {
       const colors = ['#ffffff','#ff595e','#ffca3a', '#1982c4', '#8ac926','#6a4c93']
       return(colors[nb_col])
     },
+    darkenColor(hex, amount = 0.2) {
+      // Convierte a RGB
+      let c = hex.substring(1); // Quita #
+      const rgb = c.match(/.{2}/g).map(x => parseInt(x,16));
+      // Oscurece cada canal
+      const darkRgb = rgb.map(v => Math.floor(v * (1 - amount)));
+      // Convierte de vuelta a hex
+      return '#' + darkRgb.map(v => v.toString(16).padStart(2,'0')).join('');
+    },
     transpose_matrix(matrix){
       return matrix[0].map((_, x) => matrix.map(row => row[x]))
     },
@@ -98,23 +106,91 @@ export default {
   align-items: center;
   gap: 10px;
   background-color: #111;
+  box-sizing: border-box;
+  font-family: 'Courier New', monospace;
 }
-.board {
-  margin-top: 10px;
-  display: grid;
-  grid-template-rows: repeat(20, 20px);
-  grid-template-columns: repeat(10, 20px);
-  gap: 1px;
-  background:#111;
+/* Info dentro del tablero */
+.tetris-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-family: 'Courier New', monospace;
+  color: #0ff;
+  text-shadow: 2px 2px 5px #f00;
 }
+.roomname { font-size: 1.2em; color: #0ff; text-shadow: 2px 2px 6px #ff0; }
+.username { color: #ff0; }
+.score { color: #f0f; }
 
+.board {
+  display: flex;
+  flex-direction: row;
+  /* NORMAL*/
+  background: #111;
+  border: 2px solid #333;
+  overflow: hidden;
+  /* HYPERRETRO
+  background: linear-gradient(45deg, #0ff 10%, #f00 90%);
+  border: 3px solid #0ff;
+  padding: 10px;
+  box-shadow:
+    0 0 30px #0ff,
+    0 0 60px #f00 inset;
+  */
+}
+/* 🔸 Cada fila */
+.row {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
 .cell {
   width: 20px;
   height: 20px;
   text-align: center;
-  border: 1px solid rgb(106, 106, 106);
+  /*border: 1px solid #111;*/
   border-radius: 3px;
-  box-shadow: 0 2px 5px rgba(255, 255, 255, 0.5);
+  /* Neón */
+  box-shadow:
+    0 0 5px var(--cell-color),
+    0 0 10px var(--cell-color),
+    0 0 20px var(--cell-color);
+  animation:  pulseCell 1.5s infinite alternate ease-in-out; /* pulseCell, pulseNeon*/
+  background-color: var(--cell-color);
+}
+/* Pulso independiente de cada celda */
+@keyframes pulseCell {
+  0% { box-shadow: 0 0 3px var(--cell-color), 0 0 6px var(--cell-color), inset 0 0 2px rgba(255,255,255,0.2); transform: scale(0.95);}
+  50% { box-shadow: 0 0 8px var(--cell-color), 0 0 16px var(--cell-color), inset 0 0 3px rgba(255,255,255,0.3); transform: scale(1.05);}
+  100% { box-shadow: 0 0 5px var(--cell-color), 0 0 10px var(--cell-color), inset 0 0 2px rgba(255,255,255,0.2); transform: scale(1);}
+}
+/* Animación suave de neón */
+@keyframes pulseNeon {
+  0% {
+    box-shadow:
+      0 0 3px var(--cell-color),
+      0 0 6px var(--cell-color),
+      0 0 12px var(--cell-color),
+      inset 0 0 2px rgba(255,255,255,0.2);
+    transform: scale(0.95);
+  }
+  50% {
+    box-shadow:
+      0 0 8px var(--cell-color),
+      0 0 16px var(--cell-color),
+      0 0 32px var(--cell-color),
+      inset 0 0 3px rgba(255,255,255,0.3);
+    transform: scale(1.05);
+  }
+  100% {
+    box-shadow:
+      0 0 5px var(--cell-color),
+      0 0 10px var(--cell-color),
+      0 0 20px var(--cell-color),
+      inset 0 0 2px rgba(255,255,255,0.2);
+    transform: scale(1);
+  }
 }
 .status{
   margin-top: 15px;

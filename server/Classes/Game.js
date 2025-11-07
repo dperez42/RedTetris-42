@@ -3,9 +3,8 @@ const fs = require("fs");
 const path = require("path");
 
 class Game {
-	constructor(name, ranking) { 
+	constructor(name, score) { 
 		console.log("init class Game")
-		console.log(ranking)
 		this.name = name
 		this.admin = null
 		this.sockets = []
@@ -14,7 +13,7 @@ class Game {
 		console.log(` creating initial list of pieces ...`);
 		this.list_pieces = []
 		this.addPieces(20)
-		this.ranking = ranking
+		this.score = score
 		this.isStart = false
 		this.isFinish = false
 		this.isCountdown = false
@@ -75,6 +74,13 @@ class Game {
 					clearInterval(this.intervalGame)
 					// set game to finish and load results and comunicate finish to all 
 					this.isFinish = true
+					// Save results
+					const result = {
+						game: this.name,
+						winner: this.winner,
+						players: this.players
+					};
+					this.score.saveResult(result)
 					// to display pop up 
 					this.sendUpdate(io)
 				}
@@ -96,7 +102,7 @@ class Game {
 				//data.sockets = this.sockets 
 				data.players = this.players
 				data.list_pieces = this.list_pieces 
-				data.ranking = this.ranking 
+				data.ranking = this.score.getRanking() 
 				data.isStart = this.isStart 
 				data.isFinish = this.isFinish
 				data.winner = this.winner 
