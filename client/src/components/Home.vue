@@ -1,21 +1,22 @@
 <template>
 <div class="container">
-  <div v-if="this.game != null" class="game-layout">
+  <!-- Zona principal del juego -->
+  <div v-if="game != null" class="game-layout">
     <!-- Sección izquierda: Galería -->
-    <div class="left-panel">
+    <aside class="left-panel">
       <h2>Galería de Tableros</h2>
       <div class="gallery">
         <div v-for="(game, index) in this.game.players" :key="index" >
           <div v-if=" this.game.players[index].socket !== socket_id">
-            <p>Tablero {{ index}}</p>
+            <p>Player: {{ this.game.players[index].name}}</p>
             <Spectrum  :room_name="this.game.name" :game="this.game.players[index]" />
             <!-- Aquí podrías insertar un componente Tetris en miniatura -->
           </div>
         </div>
       </div>
-    </div>
+    </aside>
     <!-- Sección derecha: Tablero principal -->
-    <div class="right-panel">
+    <main class="right-panel">
       <div class="board-wrapper">
         <div v-for="(game, index) in this.game.players" :key="index">
           
@@ -55,7 +56,7 @@
         <button v-if="this.game.players[0].socket == socket_id & !this.game.isCountdown & this.game.isStart" 
         class="start-button" @click="clickReStart()" @keydown.space.prevent>ReStart</button>
       </div>
-    </div>
+    </main>
 
     <!-- pop up countdown -->
     <div v-if="this.game != null & this.game.isCountdown" class="overlay_countdown">
@@ -134,174 +135,25 @@
 
 </template>
 
-<script>
-import { ref } from 'vue'
-import { socket } from '../services/sockets'
-import Game from "./subcomponents/game.vue"
-import Spectrum from "./subcomponents/spectrum.vue"
-import store from '../store/index' 
-
-export default {
-  name: 'Home',
-  components: {
-    Game,
-    Spectrum
-  },
-  props: {
-    },
-  data() {
-    return {
-      roomName:'test_room',
-      playerName:"test_player",
-      visible: true,
-      count: 10,
-      modes : [
-        { label: "🟢 Easy", value: "easy" },
-        { label: "🟠 Medium", value: "medium" },
-        { label: "🔴 Hard", value: "hard" },
-      ],
-      especial_modes : [
-        { label: "👻 Ghost", value: "ghost" },
-      ],
-      mode : 'medium',
-      ghost_mode : false,
-      ranking: false
-    }
-  },
-  methods: {
-    createBoard(){
-      const arr = new Array(this.width).fill(null)
-      this.game.board = arr.map(()=> new Array(this.height).fill(Math.floor(Math.random()*6)))
-      console.log(this.board)
-      //this.board = Array.from({length: this.height}, () => Array(this.width).fill(colors[Math.floor(Math.random()*colors.length)]))
-      //this.board = Array.from({length: this.height}, () => Array(this.width).fill(0))
-    },
-    handleSubmit(){
-      console.log("Joinin")
-       const msg = {
-        command: 'join',
-        playerName: this.playerName,
-        roomName: this.roomName,
-        socherId: socket.id,
-        data: ''
-      }
-      socket.emit('red_tetris_server',msg)
-    },
-    click(){
-      console.log("click")
-      const msg = {
-        command: 'join',
-        playerName: this.playerName,
-        roomName: this.roomName
-      }
-      socket.emit('red_tetris_server',msg)
-    },
-    clickStart(){
-      console.log("click Start")
-      const msg = {
-        command: 'start',
-        gameName: this.game.name,
-        mode : this.mode === 'medium' ? 500: this.mode === 'hard' ? 250:1000,
-        ghost_mode: this.ghost_mode
-      }
-      console.log("send", msg)
-      socket.emit('red_tetris_server',msg)
-    },
-    clickPause(){
-      console.log("click Pause")
-      const msg = {
-        command: 'pause',
-        gameName: this.game.name
-      }
-      console.log("send", msg)
-      socket.emit('red_tetris_server',msg)
-    },
-    clickReStart(){
-      console.log("click ReStart")
-      const msg = {
-        command: 'restart',
-        gameName: this.game.name,
-        mode : this.mode === 'medium' ? 500: this.mode === 'hard' ? 250:1000,
-        ghost: this.ghost_mode
-      }
-      console.log("send", msg)
-      socket.emit('red_tetris_server',msg)
-    },
-    clickMode(mode){
-      this.mode = mode
-    },
-    clickEspecialMode(){
-      this.ghost_mode = !this.ghost_mode 
-    },
-    clickRanking(){
-      this.ranking = !this.ranking
-    },
-    keyHandler(event){
-      if (!this.game.isPause){
-        if (['ArrowDown',  'ArrowUp',  'ArrowRight',  'ArrowLeft', ' ','Escape'].indexOf(event.key) > -1) {
-          const msg = {
-            command: 'move',
-            gameName: this.game.name,
-            playerSocket: this.socket_id,
-            move: event.key
-          }
-          if (this.game.isStart){
-            socket.emit('red_tetris_server', msg);
-          }
-        }
-      }
-    }
-  },
-  mounted() {
-    /*
-    this.createBoard()
-    this.game.username = 'daniel'
-    this.game.score = 10
-    console.log(this.game)
-    */
-    //document.body.addEventListener('keydown', this.keyHandler);
-    //window.addEventListener('keydown', this.callback_keydown, { capture: true });
-    //window.addEventListener('keyup', this.callback_keyup, { capture: true });
-  },
-  computed:{
-    example_board() {
-      return store.state.games_store.example_board
-    },
-    game(){
-      return store.state.games_store.game
-    },
-    socket_id(){
-      return store.state.games_store.socket
-    }
-  },
-  beforeMount() {
-    document.body.addEventListener('keydown', this.keyHandler);
-    //window.addEventListener('keydown', this.callback_keydown, { capture: true });
-    //window.addEventListener('keyup', this.callback_keyup, { capture: true });
-  },
-  beforeUnmount() {
-    document.body.removeEventListener('keydown', this.keyHandler);
-    //window.removeEventListener('keydown', callback_keydown,  { capture: true });
-    //window.removeEventListener('keyup', this.callback_keyup, { capture: true });
-  },
-}
-</script>
-
 <style scoped>
 .container {
-  display: flex;
+  justify-content: center;
+  align-items: center;
   height: 100vh;
-  font-family: Arial, sans-serif;
+  font-family: "Segoe UI", sans-serif;
+  background: #111;
+  color: white;
 }
 
 .game-layout {
   display: flex;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
 }
 /* Sección izquierda */
 .left-panel {
-  width: 60%;
-  background-color: #f4f4f4;
+  width: 50%;
+  background-color: #c38b8b;
   padding: 1rem;
   overflow-y: auto;
   border-right: 1px solid #ccc;
@@ -476,12 +328,157 @@ export default {
   border-color: #00e5ff;
   box-shadow: 0 0 8px #00e5ff;
 }
-.cell {
-  width: 20px;
-  height: 20px;
-  text-align: center;
-  border: 1px solid rgb(106, 106, 106);
-  border-radius: 3px;
-  box-shadow: 0 2px 5px rgba(255, 255, 255, 0.5);
-}
 </style>
+
+<script>
+import { ref } from 'vue'
+import { socket } from '../services/sockets'
+import Game from "./subcomponents/game.vue"
+import Spectrum from "./subcomponents/spectrum.vue"
+import store from '../store/index' 
+
+export default {
+  name: 'Home',
+  components: {
+    Game,
+    Spectrum
+  },
+  props: {
+    },
+  data() {
+    return {
+      roomName:'test_room',
+      playerName:"test_player",
+      visible: true,
+      count: 10,
+      modes : [
+        { label: "🟢 Easy", value: "easy" },
+        { label: "🟠 Medium", value: "medium" },
+        { label: "🔴 Hard", value: "hard" },
+      ],
+      especial_modes : [
+        { label: "👻 Ghost", value: "ghost" },
+      ],
+      mode : 'medium',
+      ghost_mode : false,
+      ranking: false
+    }
+  },
+  methods: {
+    createBoard(){
+      const arr = new Array(this.width).fill(null)
+      this.game.board = arr.map(()=> new Array(this.height).fill(Math.floor(Math.random()*6)))
+      console.log(this.board)
+      //this.board = Array.from({length: this.height}, () => Array(this.width).fill(colors[Math.floor(Math.random()*colors.length)]))
+      //this.board = Array.from({length: this.height}, () => Array(this.width).fill(0))
+    },
+    handleSubmit(){
+      console.log("Joinin")
+       const msg = {
+        command: 'join',
+        playerName: this.playerName,
+        roomName: this.roomName,
+        socherId: socket.id,
+        data: ''
+      }
+      socket.emit('red_tetris_server',msg)
+    },
+    click(){
+      console.log("click")
+      const msg = {
+        command: 'join',
+        playerName: this.playerName,
+        roomName: this.roomName
+      }
+      socket.emit('red_tetris_server',msg)
+    },
+    clickStart(){
+      console.log("click Start")
+      const msg = {
+        command: 'start',
+        gameName: this.game.name,
+        mode : this.mode === 'medium' ? 500: this.mode === 'hard' ? 250:1000,
+        ghost_mode: this.ghost_mode
+      }
+      console.log("send", msg)
+      socket.emit('red_tetris_server',msg)
+    },
+    clickPause(){
+      console.log("click Pause")
+      const msg = {
+        command: 'pause',
+        gameName: this.game.name
+      }
+      console.log("send", msg)
+      socket.emit('red_tetris_server',msg)
+    },
+    clickReStart(){
+      console.log("click ReStart")
+      const msg = {
+        command: 'restart',
+        gameName: this.game.name,
+        mode : this.mode === 'medium' ? 500: this.mode === 'hard' ? 250:1000,
+        ghost: this.ghost_mode
+      }
+      console.log("send", msg)
+      socket.emit('red_tetris_server',msg)
+    },
+    clickMode(mode){
+      this.mode = mode
+    },
+    clickEspecialMode(){
+      this.ghost_mode = !this.ghost_mode 
+    },
+    clickRanking(){
+      this.ranking = !this.ranking
+    },
+    keyHandler(event){
+      if (!this.game.isPause){
+        if (['ArrowDown',  'ArrowUp',  'ArrowRight',  'ArrowLeft', ' ','Escape'].indexOf(event.key) > -1) {
+          const msg = {
+            command: 'move',
+            gameName: this.game.name,
+            playerSocket: this.socket_id,
+            move: event.key
+          }
+          if (this.game.isStart){
+            socket.emit('red_tetris_server', msg);
+          }
+        }
+      }
+    }
+  },
+  mounted() {
+    /*
+    this.createBoard()
+    this.game.username = 'daniel'
+    this.game.score = 10
+    console.log(this.game)
+    */
+    //document.body.addEventListener('keydown', this.keyHandler);
+    //window.addEventListener('keydown', this.callback_keydown, { capture: true });
+    //window.addEventListener('keyup', this.callback_keyup, { capture: true });
+  },
+  computed:{
+    example_board() {
+      return store.state.games_store.example_board
+    },
+    game(){
+      return store.state.games_store.game
+    },
+    socket_id(){
+      return store.state.games_store.socket
+    }
+  },
+  beforeMount() {
+    document.body.addEventListener('keydown', this.keyHandler);
+    //window.addEventListener('keydown', this.callback_keydown, { capture: true });
+    //window.addEventListener('keyup', this.callback_keyup, { capture: true });
+  },
+  beforeUnmount() {
+    document.body.removeEventListener('keydown', this.keyHandler);
+    //window.removeEventListener('keydown', callback_keydown,  { capture: true });
+    //window.removeEventListener('keyup', this.callback_keyup, { capture: true });
+  },
+}
+</script>

@@ -1,12 +1,14 @@
 <template>
   <div class="tetris">
   <!-- Room Name -->
+  <!--
   <div class="status">
       <span class="roomname">{{room_name}}</span>
   </div>
+  --->
   <!-- Board -->
   <div class="board">
-		<div v-for="(row, y) in this.transpose_matrix(this.game.field)"  :key="y">
+		<div class="row" v-for="(row, y) in this.transpose_matrix(this.game.field)"  :key="y">
       <div v-for="(cell, x) in row"  :key="x" >
         <div class="cell" :style="{backgroundColor: isEmpty(x)}">
         </div>
@@ -14,11 +16,13 @@
     </div>
   </div>
   <!--- Score and username-->
+  <!--
     <div class="status">
       <span class="username">{{this.game.name}}</span>
       <span class="score"> Score: {{this.game.score}}</span>
       {{socket_id}}
     </div>
+    -->
   </div>
   
 </template>
@@ -86,18 +90,22 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
   background-color: rgb(47, 42, 131);
+  padding: 10px;
 }
 .board {
-  margin-top: 10px;
-  display: grid;
-  grid-template-rows: repeat(20, 10px);
-  grid-template-columns: repeat(10, 10px);
-  gap: 1px;
-  background:#111;
+   display: flex;
+  flex-direction: row;
+  background: #111;
+  border: 2px solid #333;
+  overflow: hidden;
 }
-
+/* 🔸 Cada fila */
+.row {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
 .cell {
   width: 10px;
   height: 10px;
