@@ -1,0 +1,1 @@
+{"parent":null,"pid":8805,"argv":["/usr/local/bin/node","/app/node_modules/.bin/mocha","--exit"],"execArgv":[],"cwd":"/app","time":1763067717745,"ppid":8794,"coverageFilename":"/app/.nyc_output/1d6fad81-031a-46e2-b90b-77c025871b4d.json","externalId":"","uuid":"1d6fad81-031a-46e2-b90b-77c025871b4d","files":["/app/Classes/Piece.js"]}

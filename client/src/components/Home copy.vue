@@ -136,7 +136,6 @@
 
 </template>
 
-
 <style scoped>
 .container {
   justify-content: center;
@@ -502,18 +501,17 @@
 </style>
 
 <script>
+import { ref } from 'vue'
 import { socket } from '../services/sockets'
 import Game from "./subcomponents/game.vue"
 import Spectrum from "./subcomponents/spectrum.vue"
-import TetrisInfo from "./subcomponents/tetris_info.vue"
-import store from '../store/index'
+import store from '../store/index' 
 
 export default {
   name: 'Home',
   components: {
     Game,
-    Spectrum,
-    TetrisInfo
+    Spectrum
   },
   props: {
     },
@@ -537,6 +535,33 @@ export default {
     }
   },
   methods: {
+    createBoard(){
+      const arr = new Array(this.width).fill(null)
+      this.game.board = arr.map(()=> new Array(this.height).fill(Math.floor(Math.random()*6)))
+      console.log(this.board)
+      //this.board = Array.from({length: this.height}, () => Array(this.width).fill(colors[Math.floor(Math.random()*colors.length)]))
+      //this.board = Array.from({length: this.height}, () => Array(this.width).fill(0))
+    },
+    handleSubmit(){
+      console.log("Joinin")
+       const msg = {
+        command: 'join',
+        playerName: this.playerName,
+        roomName: this.roomName,
+        socherId: socket.id,
+        data: ''
+      }
+      socket.emit('red_tetris_server',msg)
+    },
+    click(){
+      console.log("click")
+      const msg = {
+        command: 'join',
+        playerName: this.playerName,
+        roomName: this.roomName
+      }
+      socket.emit('red_tetris_server',msg)
+    },
     clickStart(){
       console.log("click Start")
       const msg = {
@@ -594,30 +619,45 @@ export default {
     }
   },
   mounted() {
+    console.log("Joinin")
+       const msg = {
+        command: 'join',
+        playerName: 'Daniel',
+        roomName: 'TestRoom',
+        socherId: socket.id,
+        data: ''
+      }
+      socket.emit('red_tetris_server',msg)
+    /*
+    this.createBoard()
+    this.game.username = 'daniel'
+    this.game.score = 10
+    console.log(this.game)
+    */
+    //document.body.addEventListener('keydown', this.keyHandler);
+    //window.addEventListener('keydown', this.callback_keydown, { capture: true });
+    //window.addEventListener('keyup', this.callback_keyup, { capture: true });
   },
   computed:{
+    example_board() {
+      return store.state.games_store.example_board
+    },
     game(){
-      console.log("update game in doom")
-      return this.$store.getters['games_store/getGame'] || null;
+      return store.state.games_store.game
     },
     socket_id(){
-      return this.$store.getters['games_store/getSocket'] || null 
+      return store.state.games_store.socket
     }
-  },
-  watch: {
-    game(newGame) {
-      console.log("Game changed:", newGame);
-    },
-    socket_id(newSocket){
-     console.log("Socket changed:", newSocket);
-    }
-    
   },
   beforeMount() {
     document.body.addEventListener('keydown', this.keyHandler);
+    //window.addEventListener('keydown', this.callback_keydown, { capture: true });
+    //window.addEventListener('keyup', this.callback_keyup, { capture: true });
   },
   beforeUnmount() {
     document.body.removeEventListener('keydown', this.keyHandler);
+    //window.removeEventListener('keydown', callback_keydown,  { capture: true });
+    //window.removeEventListener('keyup', this.callback_keyup, { capture: true });
   },
 }
 </script>

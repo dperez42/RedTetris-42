@@ -36,7 +36,7 @@ export default {
     },
     // getters are use to retrieve state data this.$store.getters['game/getTetris'];
     getters: {
-        getSocket: state => state.socket,
+        getSocket: (state) => state.socket,
         getGame: state => state.game
     }
 }

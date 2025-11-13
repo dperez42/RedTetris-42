@@ -27,13 +27,12 @@ class ClassTipo {
 		this.width =  tetriminios[this.index_piece].rotation[this.rotation][0].length
 		this.height = tetriminios[this.index_piece].rotation[this.rotation].length
 		this.data = tetriminios[this.index_piece].rotation[this.rotation]
-		this.color = 1
+		this.color = list_pieces[0].color
 		this.nb_piece = 1
 		this.score = 0
 		this.penalty_lines = 0
 		this.GameOver = false
 	}
-
 	newPiece (){
 		this.index_piece = Math.floor(Math.random() * 7);
 		this.x = 4
@@ -116,8 +115,6 @@ class ClassTipo {
 			}
 		}
 		// give me new piece ------------ 
-		//this.newPiece ()
-		//console.log("mew piece", this.nb_piece)
 		this.index_piece = list_pieces[this.nb_piece].index_piece;
 		this.x = list_pieces[this.nb_piece].x
 		this.y = list_pieces[this.nb_piece].y
@@ -131,7 +128,6 @@ class ClassTipo {
 		// call check GameOver
 		this.GameOver = this.checkGameOver(field)
 		this.penalty_lines = 0
-		//if (this.GameOver){console.loj("")}
 	}
 	getNb_piece(){
 		return this.nb_piece
@@ -173,10 +169,7 @@ class ClassTipo {
 	// gravity
 	down(gravity, list_pieces, field, freeze_lines){
 		this.penalty_lines = 0
-		//console.log("calling down", this.score)
-		//console.log("calling down",this.nb_piece, "--", list_pieces[this.nb_piece])
 		this.y += gravity;
-		//console.log("calling down",this.checkCollision(field))
 		if (this.checkCollision(field)){
 			//Undo Move
 			this.y -= gravity;
@@ -192,27 +185,21 @@ class ClassTipo {
 	}
 	// softdrop
 	softDrop(field){
-		//console.log("softDrop")
 		this.y += 1;
 		if (this.checkCollision(field)){
 			//Undo Move
 			this.y -= 1;
-			// Merge piece in field
-			//this.addPieceToField(field)
 			// check full lines
 			this.clearlines(field)
 		}
 	}
 	// harddrop
 	hardDrop(field){
-		//console.log("hardDrop")
 		while(1){
 			this.y += 1;
 			if (this.checkCollision(field)){
 				//Undo Move
 				this.y -= 1;
-				// Merge piece in field
-				//this.addPieceToField(field)
 				break
 			}  
 		}

@@ -20,7 +20,7 @@ body,
   height: 100%;
   width: 100%;
   overflow: hidden;
-  background-color: #111;
+  background-color: rgb(0, 0, 0);
 }
 
 /* Contenedor principal de la app */

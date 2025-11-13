@@ -13,6 +13,8 @@ class ClassTipo {
 		this.field = Array.from({ length: sizeRow }, () => Array(sizeColumn).fill(0));
 		// campo con piezas fijas + movil
 		this.field_piece = Array.from({ length: sizeRow }, () => Array(sizeColumn).fill(0));
+		
+		console.log(this.field_piece)
 		this.score = 0
 		this.freeze_lines = 0
 		this.gameOver = false
@@ -56,27 +58,6 @@ class ClassTipo {
 		}
 		return
 	}
-
-	print(){
-		console.log("Player:", this.name)
-		let field_temp = Array.from({ length: this.sizeRow }, () => Array(this.sizeColumn).fill(0));
-		for (let i = 0; i < this.sizeRow; i++){
-         for (let j = 0; j < this.sizeColumn; j++){
-                field_temp[i][j]=this.field[i][j];
-		 }
-		}
-		for (let i = this.piece.y; i < this.piece.height; i++){
-         for (let j = this.piece.x; j < (this.piece.x +  this.piece.width); j++){
-            field_temp[i][j]=this.piece.color;
-		 }
-		}
-		for (let i = 0; i < this.sizeRow; i++){
-         for (let j = 0; j < this.sizeColumn; j++){
-                process.stdout.write(field_temp[i][j] + " ");
-		 }
-		 console.log()
-		}
-	}
 	merge(ghost_mode){
 		let field_temp = Array.from({ length: this.sizeRow }, () => Array(this.sizeColumn).fill(0));
 		for (let i = 0; i < this.sizeRow; i++){
@@ -99,20 +80,7 @@ class ClassTipo {
 		}
 		this.field_piece = field_temp
 	}
-	getBoard(){
-		let field_temp = Array.from({ length: this.sizeRow }, () => Array(this.sizeColumn).fill(0));
-		for (let i = 0; i < this.sizeRow; i++){
-         for (let j = 0; j < this.sizeColumn; j++){
-                field_temp[i][j]=this.field[i][j];
-		 }
-		}
-		for (let i = this.piece.y; i < this.piece.height; i++){
-         for (let j = this.piece.x; j < (this.piece.x +  this.piece.width); j++){
-            field_temp[i][j]=1;
-		 }
-		}
-		return field_temp
-	}
+	/// getters
 	getNbpiece(){
 		return this.nb_piece
 	}
@@ -123,7 +91,6 @@ class ClassTipo {
 		return this.penalty_lines
 	}
 	addFreezeLines(lines){
-		console.log("freezing ", lines, "lines")
 		this.freeze_lines=this.freeze_lines+lines
 	}
 }

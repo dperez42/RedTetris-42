@@ -7,8 +7,8 @@ class Score {
 		this.resultsFile = path.join(process.cwd(), "results.json");
 		this.results = this.loadResult()
 		this.ranking = []
-		console.log(this.resultsFile)
-		console.log(this.results)
+		//console.log(this.resultsFile)
+		//console.log(this.results)
 		this.calcRanking()
 	}
 	

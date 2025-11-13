@@ -6,7 +6,7 @@ export const state = reactive({
   connected: false,
 });
 
-const serverURL = import.meta.env.VITE_SERVER_URL===undefined ? 'http://localhost:1337':import.meta.env.VITE_SERVER_URL;
+const serverURL = import.meta.env.VITE_SERVER_URL===undefined ? 'http://localhost:3000':import.meta.env.VITE_SERVER_URL;
 export const socket = io(serverURL,{extraHeaders: { }})
 
 socket.on("connect", () => {
@@ -24,6 +24,9 @@ socket.on("disconnect", () => {
 socket.on("red_tetris_client", async (data) => {
   if (import.meta.env.VITE_DEBUG==='true'){console.log(data.data)}
   if (data.command==='info'){
+    console.log("info:", data.data)
+  }
+  if (data.command==='error'){
     console.log("info:", data.data)
   }
   if (data.command==='update'){

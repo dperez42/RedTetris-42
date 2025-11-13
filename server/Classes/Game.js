@@ -6,7 +6,6 @@ class Game {
 	constructor(name, score) { 
 		console.log("init class Game")
 		this.name = name
-		this.admin = null
 		this.sockets = []
 		this.players = []
 		// add pieces to list this.list_pieces = []
@@ -22,7 +21,6 @@ class Game {
 		this.winner = null
 		this.winner_socket = null
 		this.intervalGame = null
-		this.countGame = 200 // for testing purpose
 		this.gravity = 500
 		this.ghost_mode = false
 		this.countdown = 5
@@ -98,7 +96,6 @@ class Game {
 				//console.log(`sending ${socket}`)
 				const data ={}
 				data.name =this.name
-				data.admin = this.admin 
 				//data.sockets = this.sockets 
 				data.players = this.players
 				data.list_pieces = this.list_pieces 
@@ -157,13 +154,6 @@ class Game {
 			//this.countGame--
 			console.log("difficult", this.gravity)
 			this.gamelogic(io)
-			/*
-			if (this.countGame<0){
-				clearInterval(this.intervalGame);
-				this.countGame=10
-				console.log("Interval stopped");
-			}
-			*/
 		},this.gravity)
 	}
 	pause(){
@@ -174,17 +164,8 @@ class Game {
 		clearInterval(this.intervalGame)
 		/// init game general data
 		console.log("reinit Game")
-		//this.name = name
-		this.admin = null
-		//this.sockets = []
-		//this.players = []
-		// add pieces to list this.list_pieces = []
-		//console.log(` creating initial list of pieces ...`);
-		//this.list_pieces = []
 		this.isStart = false
 		this.intervalGame = null
-		this.countGame = 200 // for testing purpose
-		//this.gravity = gravity
 		this.isCountdown = false
 		this.isPause = false
 		this.countdown = 5
@@ -311,9 +292,13 @@ class Game {
 		console.log("list of pieces")
 		console.log(this.list_pieces)
 	}
+	/// getters
 	info(){
 		console.log("name of the game:",this.name, "list of players:",this.players)
 		return
+	}
+	getPlayers(){
+		return this.players
 	}
 	getName(){
 		return this.name

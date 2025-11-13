@@ -14,6 +14,7 @@ export default defineConfig(({ mode }) => {
       host: '0.0.0.0', // par default: localhost
       strictPort: true,
     },
-    plugins: [vue()]
+    plugins: [vue()],
+    base: '/',
   }
 })
