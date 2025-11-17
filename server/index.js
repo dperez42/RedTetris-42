@@ -205,8 +205,13 @@ app.get("/:room/:user", (req, res) => {
     return res.sendFile(path.join(__dirname, "html_error", "tetris_info.html"));
   }
  
+  /// ❌ Game is stated or countdown
+  const game = redtetris.getGame(room)
+  if (game.isStart || game.sCountdown){
+    console.log("Game started");
+    return res.sendFile(path.join(__dirname, "html_error", "game_started.html"));
+  }
   /// ❌ Player name already taken
-
   // ✅ Otherwise serve the Vue game app
   
   console.log("All good — serving dist/index.html");

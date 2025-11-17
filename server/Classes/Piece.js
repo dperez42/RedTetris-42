@@ -2,7 +2,7 @@ const tetriminios = require('./tetriminios.json');
 
 class ClassTipo {
     constructor() { 
-		console.log("init class Piece")
+		//console.log("init class Piece")
 		this.index_piece = 0
 		this.x = 4
 		this.y = 0
@@ -205,12 +205,7 @@ class ClassTipo {
 		}
 		// check full lines
 		this.clearlines(field)
-	}
-	// info
-	print(){
-		console.log("Piece:", this.index_piece, " x:", this.x, " y:", this.y," Rotation:", this.rotation, " Width:", this.width, " Height: ", this.height)
-		console.log(tetriminios[this.index_piece].rotation[this.rotation])
-	}    
+	}  
 }
 
 module.exports = ClassTipo;

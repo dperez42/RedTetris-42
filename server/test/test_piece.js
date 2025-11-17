@@ -123,4 +123,32 @@ describe('Piece', function () {
             assert.equal(JSON.stringify(piece.getPenaltyLines()), JSON.stringify(0));
         });
     }); 
+    describe('moving piece x', function () {
+        let piece10  = new Piece();
+        piece10.newPiece() //get first piece 
+        it ('Should be able to move the piece x', function() {
+            piece10.right(field_piece)
+            assert.equal(JSON.stringify(piece10.x), JSON.stringify(5));
+	    });
+        it ('Should be able to move the piece x. + out limits', function() {
+            piece10.right(field_piece)
+            piece10.right(field_piece)
+            piece10.right(field_piece)
+            piece10.right(field_piece)
+            assert.equal(JSON.stringify(piece10.x), JSON.stringify(7));
+	    });
+        it ('Should be able to move the piece x. - out limits', function() {
+            piece10.x=0
+            piece10.left(field_piece)
+            assert.equal(JSON.stringify(piece10.x), JSON.stringify(0));
+	    });
+    });
+    describe('moving piece y', function () {
+        let piece11  = new Piece();
+        piece11.newPiece() //get first piece 
+        it ('Should be able to move the piece y +1', function() {
+            piece11.softDrop(field_piece)
+            assert.equal(JSON.stringify(piece11.y), JSON.stringify(1));
+	    });
+    });
 });

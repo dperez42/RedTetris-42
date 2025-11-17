@@ -2,9 +2,9 @@ const fs = require("fs");
 const path = require("path");
 
 class Score {
-	constructor() { 
+	constructor(filename = "results.json") { 
 		console.log("init class Score")
-		this.resultsFile = path.join(process.cwd(), "results.json");
+		this.resultsFile = path.join(process.cwd(), filename);
 		this.results = this.loadResult()
 		this.ranking = []
 		//console.log(this.resultsFile)
@@ -31,9 +31,9 @@ class Score {
 		  }
 		  results.push(result);
 		  fs.writeFileSync(this.resultsFile, JSON.stringify(results, null, 2));
-		  console.log("✅ Game result saved:", result);
+		  //console.log("✅ Game result saved:", result);
 		  // redo ranking & send
-
+		  return true
 		} catch (err) {
 		  console.error("❌ Error saving result:", err);
 		}

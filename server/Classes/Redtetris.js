@@ -3,7 +3,7 @@ const Score = require("./Score.js");
 
 class Games {
 	constructor() { 
-		console.log("init class Redtetris")
+		//console.log("init class Redtetris")
 		this.games = []
 		this.score = new Score()
 	}
@@ -45,10 +45,9 @@ class Games {
 	getGameBySocket(socket){
 		let search_game = false
 		for (let i = 0; i < this.games.length; i++) {
-			console.log("searching game")
+			//console.log("searching game")
 			// check if socket id is in this.sockets = []
 			if (this.games[i].sockets.includes(socket)) {
-				console.log("gME FOUNF")
 				search_game = this.games[i]
 				break
 			}

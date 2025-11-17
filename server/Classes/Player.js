@@ -2,7 +2,7 @@ const Piece = require("./Piece.js");
 
 class ClassTipo {
     constructor(sizeColumn, sizeRow, name, socket) { 
-		console.log("init class Player")
+		//console.log("init class Player")
 		this.sizeColumn = sizeColumn
 		this.sizeRow = sizeRow
 		this.name = name
@@ -14,7 +14,7 @@ class ClassTipo {
 		// campo con piezas fijas + movil
 		this.field_piece = Array.from({ length: sizeRow }, () => Array(sizeColumn).fill(0));
 		
-		console.log(this.field_piece)
+		//console.log(this.field_piece)
 		this.score = 0
 		this.freeze_lines = 0
 		this.gameOver = false
@@ -35,7 +35,6 @@ class ClassTipo {
 		newPiece.firstPiece(list_pieces)
 		this.piece = newPiece;
 	}
-
 	movePiece(move, step, list_pieces, ghost_mode){
 		if (!this.gameOver){
 			this.penalty_lines = 0

@@ -4,12 +4,12 @@ const path = require("path");
 
 class Game {
 	constructor(name, score) { 
-		console.log("init class Game")
+		//console.log("init class Game")
 		this.name = name
 		this.sockets = []
 		this.players = []
 		// add pieces to list this.list_pieces = []
-		console.log(` creating initial list of pieces ...`);
+		//console.log(` creating initial list of pieces ...`);
 		this.list_pieces = []
 		this.addPieces(20)
 		this.score = score
@@ -90,11 +90,7 @@ class Game {
 		}
 	}
 	sendUpdate(io){
-		this.sockets.forEach(socketId => {
-			const socket = io.sockets.sockets.get(socketId);
-			if (socket) {
-				//console.log(`sending ${socket}`)
-				const data ={}
+		const data ={}
 				data.name =this.name
 				//data.sockets = this.sockets 
 				data.players = this.players
@@ -115,12 +111,16 @@ class Game {
 					'command':'update',
 					'data': data
 				}
+		this.sockets.forEach(socketId => {
+			const socket = io.sockets.sockets.get(socketId);
+			if (socket) {
 				//console.log(data)
 				socket.emit('red_tetris_client', msg);
 			} else {
 			  console.warn(`Socket not found: ${socketId}`);
 			}
 		});
+		return msg
 	}
 	start(seed,io){
 		console.log(` starting game with seed ${seed} ...`);
@@ -141,7 +141,7 @@ class Game {
 			}
 		});
 		// add first piece to all
-		console.log(this.list_pieces)
+		//console.log(this.list_pieces)
 		this.players.forEach(player => {
 			player.addFirstPiece(this.list_pieces)
 		});
@@ -155,6 +155,7 @@ class Game {
 			console.log("difficult", this.gravity)
 			this.gamelogic(io)
 		},this.gravity)
+		return true
 	}
 	pause(){
 		console.log("game pause")
@@ -232,6 +233,7 @@ class Game {
 			  this.start(Math.random(),io); // o pasa un seed real
 			}
 		  }, 1000);
+		  return true
 	}
 	checkPlayer(player_name){
 		let ex = false
@@ -286,16 +288,16 @@ class Game {
 			piece.rotation = Math.floor(Math.random() * 4)
 			piece.color = 1 + Math.floor(Math.random() * 5)
 			this.list_pieces.push(piece)
-			console.log("añado piece a game")
+			//console.log("añado piece a game")
 			//piece.print()
 		}
-		console.log("list of pieces")
-		console.log(this.list_pieces)
+		//console.log("list of pieces")
+		//console.log(this.list_pieces)
 	}
 	/// getters
 	info(){
 		console.log("name of the game:",this.name, "list of players:",this.players)
-		return
+		return ("name of the game:"+this.name+ "list of players:"+this.players)
 	}
 	getPlayers(){
 		return this.players
