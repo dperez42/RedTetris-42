@@ -212,6 +212,14 @@ app.get("/:room/:user", (req, res) => {
     return res.sendFile(path.join(__dirname, "html_error", "game_started.html"));
   }
   /// ❌ Player name already taken
+  // check if user is in game yet
+  const check_player = game.checkPlayer(user)
+  if (check_player) {
+    return res.sendFile(path.join(__dirname, "html_error", "user_name.html"));
+  } 
+
+
+
   // ✅ Otherwise serve the Vue game app
   
   console.log("All good — serving dist/index.html");
