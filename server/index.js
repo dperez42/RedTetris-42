@@ -82,18 +82,9 @@ io.on("connection", async (socket) => {
       } else {
         // search game by name
         console.log('IO: Game ', roomName," exist.")
+        
         const game = redtetris.getGame(roomName)
-        // ❌ Game is stated or countdown
-        if (game.isStart || game.isCountdown){
-          console.log("IO: Game started NO JOIN SEND A MSG");                   ///////////////////////////////// send error msg   
-          msg = {
-            'command':'error',
-            'data': "GAME STARTED"
-          }
-          socket.emit('red_tetris_client',msg)
-          return
-        }
-        // ❌ Check if game is finish ------------------------------------------
+        // ❌ First Check if game is finish ------------------------------------------
         if (game.isFinish) {
           console.log("IO: Game is finished  no join SEND A MSG");                   ///////////////////////////////// send error msg   
           msg = {
@@ -103,6 +94,17 @@ io.on("connection", async (socket) => {
           socket.emit('red_tetris_client',msg)
           return
         }
+        // ❌ Second check if game is started or in a countdown
+        if (game.isStart || game.isCountdown){
+          console.log("IO: Game started NO JOIN SEND A MSG");                   ///////////////////////////////// send error msg   
+          msg = {
+            'command':'error',
+            'data': "GAME STARTED"
+          }
+          socket.emit('red_tetris_client',msg)
+          return
+        }
+        
         // ❌ Check Player name already taken
         const check_player = game.checkPlayer(playerName)
         if (!check_player) {

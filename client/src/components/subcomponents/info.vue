@@ -1,11 +1,9 @@
 <template>
   <div class="tetris-container">
-    <div ref="background"></div>
-
+    <div class="background" ref="background"></div>
     <div class="message-box">
       <h1>🧱 {{title}}!</h1>
-      <p>
-        {{title1}}:<br />
+      <p>{{title1}}:<br />
         {{title2}}
       </p>
     </div>
@@ -52,7 +50,7 @@ onMounted(() => {
 })
 </script>
 
-<style scoped>
+<style>
 .tetris-container {
   margin: 0;
   height: 100vh;
@@ -82,6 +80,15 @@ onMounted(() => {
 @keyframes fall {
   0%   { transform: translateY(-60px) rotate(0deg); opacity: 1; }
   100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+}
+.background {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  z-index: 1;
 }
 
 .message-box {

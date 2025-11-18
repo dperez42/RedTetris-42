@@ -279,6 +279,10 @@ class Game {
 		// Delete player socket in socket[]
 		const filtered_sockets = this.sockets.filter(item => item !== socket)
 		this.sockets = filtered_sockets
+		// check if only one -> set this.isOnePlayer = true
+		if (this.sockets.length === 1){
+			this.isOnePlayer = true
+		}
 		return
 	}
 	addPieces(nb){
