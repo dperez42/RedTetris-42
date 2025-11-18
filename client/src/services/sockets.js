@@ -27,7 +27,8 @@ socket.on("red_tetris_client", async (data) => {
     console.log("info:", data.data)
   }
   if (data.command==='error'){
-    console.log("info:", data.data)
+    console.log("ERROR:", data.data)
+    store.commit("error_store/setError", data)
   }
   if (data.command==='update'){
     console.log("update")

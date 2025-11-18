@@ -269,7 +269,7 @@ class Game {
 		}
 		return null
 	}
-	//delete a player from a game by socket.id
+	//delete a player from a game by socket.id (in player list and socket list)
 	delPlayerBySocket(socket){
 		// Delete player by socket in players[]
 		const filtered = this.players.filter(item => item.socket !== socket) // remove an element with specified valu
@@ -296,7 +296,7 @@ class Game {
 	}
 	/// getters
 	info(){
-		console.log("name of the game:",this.name, "list of players:",this.players)
+		//console.log("name of the game:",this.name, "list of players:",this.players)
 		return ("name of the game:"+this.name+ "list of players:"+this.players)
 	}
 	getPlayers(){

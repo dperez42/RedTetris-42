@@ -45,49 +45,78 @@ io.on("connection", async (socket) => {
       'data': "CONNECTED TO SERVER"
   }
   socket.emit('red_tetris_client',msg)
-  console.log("Client Connected From", socket.handshake.headers.referer, socket.id);
+  console.log("IO: Client Connected From", socket.handshake.headers.referer, socket.id);
   const url_data = socket.handshake.headers.referer.split('/')
   // check parameters
   if (url_data.length !== 5){
     let msg = {
       'command':'error',
-      'data': "NOT CORRECT PARAMETERS"
+      'data': "NOT PARAMETERS"
     }
     socket.emit('red_tetris_client',msg)
-    console.log("Error parameters:", url_data)
+    console.log("IO: Error parameters:", url_data)
     param_check = false
+    return
   }
   if (param_check) {
     const roomName = url_data[3]
     const playerName =url_data[4]
-    console.log("Parameters:", roomName, playerName)
+    console.log("IO: Parameters:", roomName, playerName)
     const room_exists =  redtetris.checkGame(roomName)
       // Check if Game exists?
 
       if (!room_exists){
-        console.log("creating game.", roomName)
+        console.log("IO: creating game.", roomName)
         const game = new Game(roomName, redtetris.getScore())
-        console.log("Player:", playerName, " init Room:", roomName)
+        console.log("IO: Player:", playerName, " init Room:", roomName)
         const player = new Player(10,20, playerName,socket.id)
         game.addPlayer(player, socket.id) // quito este array socketid
         redtetris.addGame(game)
         // send update msg to all player in the game
+        msg = {
+            'command':'error',
+            'data': "OK"
+        }
+        socket.emit('red_tetris_client',msg)
         game.sendUpdate(io)
       } else {
         // search game by name
-        console.log('Game ', roomName," exist.")
+        console.log('IO: Game ', roomName," exist.")
         const game = redtetris.getGame(roomName)
-        // check if user is in game yet
+        // ❌ Check if game is finish ------------------------------------------
+        
+        //❌ Player name already taken
         const check_player = game.checkPlayer(playerName)
         if (!check_player) {
-          console.log("Player:", playerName, " join to Room:", roomName)
+          console.log("IO: Player:", playerName, " join to Room:", roomName)
           const player = new Player(10,20, playerName,socket.id)
           game.addPlayer(player, socket.id)
-          game.info()
+          //game.info()
           // send update msg to all player in the game
+          msg = {
+            'command':'error',
+            'data': "OK"
+          }
+          socket.emit('red_tetris_client',msg)
           game.sendUpdate(io)
         } else {
-          console.log("Player:", playerName, " already in Room:", roomName)
+          console.log("IO: Player:", playerName, " already in Room:", roomName) //////////////////////////////// send error msg   
+          msg = {
+            'command':'error',
+            'data': "WRONG USER"
+          }
+          socket.emit('red_tetris_client',msg)
+          return
+        }
+        // ❌ Game is stated or countdown
+        if (game.isStart || game.isCountdown){
+          console.log("IO: Game started NO JOIN SEND A MSG");                   ///////////////////////////////// send error msg   
+          msg = {
+            'command':'error',
+            'data': "GAME STARTED"
+          }
+          socket.emit('red_tetris_client',msg)
+          return
         }
       }
   }
@@ -112,7 +141,7 @@ io.on("connection", async (socket) => {
           // search game by name
           console.log('Game ',data.roomName," exist.")
           const game = redtetris.getGame(data.roomName)
-          // check if user is in game yet
+          //❌ Player name already taken
           const check_player = game.checkPlayer(data.playerName)
           if (!check_player) {
             console.log("Player:", data.playerName, " join to Room:", data.roomName)
@@ -124,25 +153,29 @@ io.on("connection", async (socket) => {
           } else {
             console.log("Player:", data.playerName, " already in Room:", data.roomName)
           }
+          // ❌ Game is stated or countdown
+          if (game.isStart || game.isCountdown){
+            console.log("Game started NO JOIN SEND A MSG");
+          }
         }
         
     }
     if (data.command==='start'){
-      console.log("recieve startCountdown", data)
+      console.log("IO: recieve startCountdown", data)
       // search game by name
       const game = redtetris.getGame(data.gameName)
       game.setmode(data.mode, data.ghost_mode)
-      console.log("game",game)
+      //console.log("IO: game",game)
       game.startCountdown(io)      
     }
     if (data.command==='pause'){
-      console.log("recieve pause", data.gameName)
+      console.log("IO: recieve pause", data.gameName)
       // search game by name
       const game = redtetris.getGame(data.gameName)
       game.pause()      
     }
     if (data.command==='restart'){
-      console.log("recieve pause", data.gameName)
+      console.log("IO: recieve pause", data.gameName)
       // search game by name
       const game = redtetris.getGame(data.gameName)
       game.init(io)      
@@ -162,7 +195,7 @@ io.on("connection", async (socket) => {
   });
    
   socket.on("disconnect", () => {
-    console.log("socket disconnect",socket.id)
+    console.log("IO: socket disconnect",socket.id)
     const game = redtetris.getGameBySocket(socket.id)
     if (game){
       // delete player with socket look in all games 
@@ -187,13 +220,13 @@ app.use(express.static(path.join(__dirname, "html_error"), {
 );
 // Log all incoming requests
 app.use((req, res, next) => {
-  console.log("Incoming request:", req.path);
+  console.log("API: Incoming request:", req.path);
   next();
 });
 // Dynamic route for room/user
 app.get("/:room/:user", (req, res) => {
   const { room, user } = req.params;
-  console.log(`Request: room=${room}, user=${user}`);
+  console.log(`API: Request: room=${room}, user=${user}`);
   res.set({
     'Cache-Control': 'no-store, no-cache, must-revalidate, private',
     'Pragma': 'no-cache',
@@ -204,25 +237,12 @@ app.get("/:room/:user", (req, res) => {
     console.log("Missing parameters — sending info page");
     return res.sendFile(path.join(__dirname, "html_error", "tetris_info.html"));
   }
- 
-  /// ❌ Game is stated or countdown
-  const game = redtetris.getGame(room)
-  if (game.isStart || game.sCountdown){
-    console.log("Game started");
-    return res.sendFile(path.join(__dirname, "html_error", "game_started.html"));
-  }
-  /// ❌ Player name already taken
-  // check if user is in game yet
-  const check_player = game.checkPlayer(user)
-  if (check_player) {
-    return res.sendFile(path.join(__dirname, "html_error", "user_name.html"));
-  } 
-
-
-
-  // ✅ Otherwise serve the Vue game app
-  
-  console.log("All good — serving dist/index.html");
+  // 1 second delay
+  setTimeout(function() {
+  //console.log("Executed after 1 second");
+  }, 1000);
+  // ✅ serve the Vue game app give socket to check username, start game, etcc
+  console.log("API: All good — serving dist/index.html");
   res.set({
     'Cache-Control': 'no-store, no-cache, must-revalidate, private',
     'Pragma': 'no-cache',

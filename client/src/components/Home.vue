@@ -1,7 +1,15 @@
 <template>
 <div class="container">
-  <!-- Zona principal del juego -->
-  <div v-if="game != null" class="game-layout">
+  <div v-if="error.data==='NOT PARAMETERS'">
+    <TetrisInfo/>
+  </div>
+  <div v-else-if="error.data==='WRONG USER'">
+    <UserInfo/>
+  </div>
+  <div v-else-if="error.data==='GAME STARTED'">
+    <GameInfo/>
+  </div>
+  <div v-else-if="game != null" class="game-layout">
     <!-- Sección izquierda: Galería -->
     <aside class="left-panel">
       <h2>Galería de Tableros</h2>
@@ -97,7 +105,9 @@
     </div>
 
   </div>
-  <div v-if="this.game == null">
+  
+  <!--
+  <div v-if="game === null">
     <div class="card">
       <button type="button" @click="click">send text message </button>
   
@@ -131,9 +141,8 @@
     </form>
     {{socket_id}}
   </div>
-
+  -->
 </div>
-
 </template>
 
 
@@ -506,14 +515,17 @@ import { socket } from '../services/sockets'
 import Game from "./subcomponents/game.vue"
 import Spectrum from "./subcomponents/spectrum.vue"
 import TetrisInfo from "./subcomponents/tetris_info.vue"
-import store from '../store/index'
+import GameInfo from "./subcomponents/game_info.vue"
+import UserInfo from "./subcomponents/user_info.vue"
 
 export default {
   name: 'Home',
   components: {
     Game,
     Spectrum,
-    TetrisInfo
+    TetrisInfo,
+    UserInfo,
+    GameInfo
   },
   props: {
     },
@@ -533,7 +545,8 @@ export default {
       ],
       mode : 'medium',
       ghost_mode : false,
-      ranking: false
+      ranking: false,
+      debug: import.meta.env.VITE_DEBUG
     }
   },
   methods: {
@@ -602,6 +615,9 @@ export default {
     },
     socket_id(){
       return this.$store.getters['games_store/getSocket'] || null 
+    },
+    error(){
+      return this.$store.getters['error_store/getError'] || null 
     }
   },
   watch: {
@@ -610,6 +626,9 @@ export default {
     },
     socket_id(newSocket){
      console.log("Socket changed:", newSocket);
+    },
+    error(){
+      console.log("Error changed:", error)
     }
     
   },
