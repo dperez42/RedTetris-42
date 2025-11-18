@@ -1,16 +1,16 @@
 <template>
 <div class="container">
   <div v-if="error.data==='NOT PARAMETERS'">
-    <Info :title="FF" :title1="MM" :title2="MM"/>
+    <Info :title="'Sorry, To enter in a Game!'" :title1="'type:'" :title2="'http://server_name_or_ip:3000/room/player_name'"/>
   </div>
   <div v-else-if="error.data==='WRONG USER'">
-    <Info :title="FF" :title1="MM" :title2="MM"/>
+    <Info :title="'Sorry, this Username is already in the Game!'" :title1="'This Username is already in the game.'" :title2="'Choose another Username.'"/>
   </div>
   <div v-else-if="error.data==='GAME STARTED'">
-    <Info :title="FF" :title1="MM" :title2="MM"/>
+    <Info :title="'Sorry, the Game Has Started!'" :title1="'This RedTetris match is already in progress.'" :title2="'Join to another game or created your own game.'"/>
   </div>
   <div v-else-if="error.data==='GAME FINISHED'">
-    <Info :title="FF" :title1="MM" :title2="MM"/>
+    <Info :title="'Sorry, the Game Has Finished!'" :title1="'This RedTetris match is finish.'" :title2="'Join to another game or created your own game.'"/>
   </div>
   <div v-else-if="game != null" class="game-layout">
     <!-- Sección izquierda: Galería -->

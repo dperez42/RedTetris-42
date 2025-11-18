@@ -65,6 +65,7 @@ class Game {
 			if (this.isOnePlayer){
 				if (nb_online_players===0) {
 					clearInterval(this.intervalGame)
+					this.isFinish = true
 					this.sendUpdate(io)
 				}
 			} else {
@@ -78,6 +79,7 @@ class Game {
 						winner: this.winner,
 						players: this.players
 					};
+					// only save results in varios players
 					this.score.saveResult(result)
 					// to display pop up 
 					this.sendUpdate(io)
