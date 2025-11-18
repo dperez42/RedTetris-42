@@ -1,13 +1,16 @@
 <template>
 <div class="container">
   <div v-if="error.data==='NOT PARAMETERS'">
-    <TetrisInfo/>
+    <Info :title="FF" :title1="MM" :title2="MM"/>
   </div>
   <div v-else-if="error.data==='WRONG USER'">
-    <UserInfo/>
+    <Info :title="FF" :title1="MM" :title2="MM"/>
   </div>
   <div v-else-if="error.data==='GAME STARTED'">
-    <GameInfo/>
+    <Info :title="FF" :title1="MM" :title2="MM"/>
+  </div>
+  <div v-else-if="error.data==='GAME FINISHED'">
+    <Info :title="FF" :title1="MM" :title2="MM"/>
   </div>
   <div v-else-if="game != null" class="game-layout">
     <!-- Sección izquierda: Galería -->
@@ -517,6 +520,7 @@ import Spectrum from "./subcomponents/spectrum.vue"
 import TetrisInfo from "./subcomponents/tetris_info.vue"
 import GameInfo from "./subcomponents/game_info.vue"
 import UserInfo from "./subcomponents/user_info.vue"
+import Info from "./subcomponents/info.vue"
 
 export default {
   name: 'Home',
@@ -525,7 +529,8 @@ export default {
     Spectrum,
     TetrisInfo,
     UserInfo,
-    GameInfo
+    GameInfo,
+    Info
   },
   props: {
     },
