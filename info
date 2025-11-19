@@ -3,6 +3,7 @@ npm start
 
 vue
 
+npm run start.dev
 npm run dev  
 npm run dev build
 

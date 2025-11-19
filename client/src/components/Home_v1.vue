@@ -513,9 +513,7 @@
 }
 </style>
 
-<script setup>
-import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue'
-import { useStore } from 'vuex'
+<script>
 import { socket } from '../services/sockets'
 import Game from "./subcomponents/game.vue"
 import Spectrum from "./subcomponents/spectrum.vue"
@@ -524,114 +522,126 @@ import GameInfo from "./subcomponents/game_info.vue"
 import UserInfo from "./subcomponents/user_info.vue"
 import Info from "./subcomponents/info.vue"
 
-//store
-const store = useStore()
-
-//Data (con ref)
-const roomName = ref('test_room')
-const playerName = ref('test_player')
-const visible = ref(true)
-const count = ref(10)
-const modes = ref([
-  { label: "🟢 Easy", value: "easy" },
-  { label: "🟠 Medium", value: "medium" },
-  { label: "🔴 Hard", value: "hard" },
-])
-const espexial_modes = ref([
-  { label: "👻 Ghost", value: "ghost" },
-])
-const mode = ref('medium')
-const ghost_mode = ref(false)
-const ranking = ref(false)
-const debug = ref(import.meta.env.VITE_DEBUG);
-// Computed
-const game = computed(() => store.getters['games_store/getGame'] || null)
-const socket_id = computed(() => store.getters['games_store/getSocket'] || null)
-const error = computed(() => store.getters['error_store/getError'] || null)
-
-//Methods
-const clickStart = () => {
-  console.log('click Start')
-  const msg = {
-    command: 'restart',
-    gameName: game.value.name,
-    node: mode.value === 'medium'? 500 : mode.value === 'hard' ? 250 : 1000,
-    ghost_mode: ghost_mode.value
-  }
-}
-
-const clickPause = () => {
-  console.log("click Pause")
-  const msg = {
-    command: 'pause',
-    getName: game.value.name
-  }
-  console.log("send", msg)
-  socket.emit('red_tetris_server', msg)
-}
-
-const clickReStart = () => {
-  console.log("click ReStart")
-  const msg = {
-    command: 'restart',
-    getName: game.value.name,
-    mode: mode.value === 'medium' ? 500 : mode.value === 'hard' ? 250 : 1000,
-    ghost_mode: ghost_mode.value
-  }
-  console.log("send", msg)
-  socket.emit('red_tetris_server', msg)
-}
-
-const clickMode = (selectedMode) => {
-  mode.value = selectedMode
-}
-
-const clickEspecialMode = () => {
-  ghost_mode.value = !ghost_mode.value
-}
-
-const clickRanking = () => {
-  ranking.value = !ranking.value
-}
-
-const keyHandler = (event) => {
-  if (!game.value?.isPause) {
-    if(['ArroDown', 'ArrowUp', 'ArrowRight', 'ArrowLeft', ' ', 'Escape'].indexOf(event.key) > -1) {
+export default {
+  name: 'Home',
+  components: {
+    Game,
+    Spectrum,
+    TetrisInfo,
+    UserInfo,
+    GameInfo,
+    Info
+  },
+  props: {
+    },
+  data() {
+    return {
+      roomName:'test_room',
+      playerName:"test_player",
+      visible: true,
+      count: 10,
+      modes : [
+        { label: "🟢 Easy", value: "easy" },
+        { label: "🟠 Medium", value: "medium" },
+        { label: "🔴 Hard", value: "hard" },
+      ],
+      especial_modes : [
+        { label: "👻 Ghost", value: "ghost" },
+      ],
+      mode : 'medium',
+      ghost_mode : false,
+      ranking: false,
+      debug: import.meta.env.VITE_DEBUG
+    }
+  },
+  methods: {
+    clickStart(){
+      console.log("click Start")
       const msg = {
-        command: 'move',
-        gameName: game.value.name,
-        playSocket: socket_id.value,
-        move: event.key
+        command: 'start',
+        gameName: this.game.name,
+        mode : this.mode === 'medium' ? 500: this.mode === 'hard' ? 250:1000,
+        ghost_mode: this.ghost_mode
       }
-      if (game.value?.isStart) {
-        socket.emit('red_tetris_server', msg)
+      console.log("send", msg)
+      socket.emit('red_tetris_server',msg)
+    },
+    clickPause(){
+      console.log("click Pause")
+      const msg = {
+        command: 'pause',
+        gameName: this.game.name
+      }
+      console.log("send", msg)
+      socket.emit('red_tetris_server',msg)
+    },
+    clickReStart(){
+      console.log("click ReStart")
+      const msg = {
+        command: 'restart',
+        gameName: this.game.name,
+        mode : this.mode === 'medium' ? 500: this.mode === 'hard' ? 250:1000,
+        ghost: this.ghost_mode
+      }
+      console.log("send", msg)
+      socket.emit('red_tetris_server',msg)
+    },
+    clickMode(mode){
+      this.mode = mode
+    },
+    clickEspecialMode(){
+      this.ghost_mode = !this.ghost_mode 
+    },
+    clickRanking(){
+      this.ranking = !this.ranking
+    },
+    keyHandler(event){
+      if (!this.game.isPause){
+        if (['ArrowDown',  'ArrowUp',  'ArrowRight',  'ArrowLeft', ' ','Escape'].indexOf(event.key) > -1) {
+          const msg = {
+            command: 'move',
+            gameName: this.game.name,
+            playerSocket: this.socket_id,
+            move: event.key
+          }
+          if (this.game.isStart){
+            socket.emit('red_tetris_server', msg);
+          }
+        }
       }
     }
-  }
+  },
+  mounted() {
+  },
+  computed:{
+    game(){
+      console.log("update game in doom")
+      return this.$store.getters['games_store/getGame'] || null;
+    },
+    socket_id(){
+      return this.$store.getters['games_store/getSocket'] || null 
+    },
+    error(){
+      return this.$store.getters['error_store/getError'] || null 
+    }
+  },
+  watch: {
+    game(newGame) {
+      console.log("Game changed:", newGame);
+    },
+    socket_id(newSocket){
+     console.log("Socket changed:", newSocket);
+    },
+    error(newError){
+      console.log("Error changed:", newError)
+    }
+    
+  },
+  beforeMount() {
+    document.body.addEventListener('keydown', this.keyHandler);
+  },
+  beforeUnmount() {
+    document.body.removeEventListener('keydown', this.keyHandler);
+  },
 }
-
-//Watchers
-watch(game, (newGame) => {
-  console.log("Game change:", newGame)
-})
-
-watch(socket_id, (newSocket) => {
-  console.log("Socket change:", newSocket)
-})
-
-watch(error, (newError) => {
-  console.log("Error change:", newError)
-})
-
-//Lyfecycle
-onMounted(() => {
-  console.log("update game in down")
-  document.body.addEventListener('keydown', keyHandler)
-})
-
-//
-onBeforeUnmount(() => {
-  document.body.removeEventListener('keydown', keyHandler)
-})
-
 </script>
