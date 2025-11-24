@@ -74,6 +74,12 @@ class Game {
 					clearInterval(this.intervalGame)
 					// set game to finish and load results and comunicate finish to all 
 					this.isFinish = true
+					// give one point to winner player
+					this.players.forEach(player => {
+						if ( player.name===this.winner){
+							player.score=1
+						}
+					});
 					// Save results
 					const result = {
 						game: this.name,

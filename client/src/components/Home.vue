@@ -46,21 +46,19 @@
     <aside class="left-panel">
       <h2>Galería de Tableros</h2>
       <div class="gallery">
-        <div v-for="(game, index) in game.players" :key="index" >
-          <div v-if=" game.socket !== socket_id">
-            <p>Player: {{ game.name}}</p>            
-            <Spectrum  :room_name="game.name" :game="game" />
-            
-          </div>
-           
+        <div v-for="(player_game, index) in game.players" :key="index" >
+          <div v-if=" player_game.socket !== socket_id">
+            <p>Player: {{ player_game.name}}</p>            
+            <Spectrum  :room_name="game.name" :game="player_game" />
+          </div>         
         </div>
       </div>
     </aside>
     <main class="right-panel">
       <div class="board-wrapper">
-        <div v-for="(game, index) in game.players" :key="index">        
-          <div v-if=" game.socket == socket_id" >
-          <Game  :room_name="game.name" :game="game" :type="game.isOnePlayer"/>       
+        <div v-for="(player_game, index) in game.players" :key="index">        
+          <div v-if=" player_game.socket == socket_id" >
+          <Game  :room_name="game.name" :game="player_game" :type="player_game.isOnePlayer"/>    
           </div>
         </div>
         <!-- 🔥 Línea de botones de modo -->
@@ -116,10 +114,13 @@
     <div v-if="game != null & ranking" class="overlay_countdown">
       <div class="popup_ranking">
         <h1 class="ranking-title">🏆 HALL OF FAME 🏆</h1>
-        <div class="ranking-table crt-overlay">
-          <div v-for="(user, x) in game.ranking"  :key="x" >
+        <div class="ranking-wrapper crt-overlay">
+          <div class="ranking-table">
+          <div v-for="(user, x) in game.ranking"  :key="x" 
+            :class="['ranking-row', x === 0 ? 'top1' : (x < 3 ? 'top3' : '')]">
             <div class="ranking-name">{{ x + 1 }}. {{ user.name }}</div>
-            <div class="ranking-score">{{ user.score }}</div> 
+            <div class="ranking-score">{{ user.Score }}</div> 
+          </div>
           </div>
         </div>
         <button
@@ -358,7 +359,7 @@
 
 .popup_ranking {
   width: 320px;
-  height: 300px;
+  height: 320px;
   /*background: radial-gradient(circle at top left, #ffffff, #b30000);*/
   background: #222;
   display: flex;
@@ -384,25 +385,22 @@
 }
 
 /* Tabla de ranking */
+/* Contenedor CRT + scroll */
+.ranking-wrapper {
+  position: relative;
+  max-height: 300px;      /* altura máxima antes de scroll */
+  overflow-y: auto;       /* permite scroll vertical */
+  padding-right: 5px;
+  width: 250px;            /* Aumenta el ancho deseado */
+  padding: 10px;
+}
 .ranking-table {
   display: flex;
   flex-direction: column;
   gap: 10px;
   margin-bottom: 15px;
-  max-height: 300px;      /* altura máxima antes de aparecer scroll */
-  overflow-y: auto;       /* barra de desplazamiento vertical */
-  
-  padding-right: 5px;     
-  scrollbar-width: thin;  
-  scrollbar-color: #0ff #111; 
-  
 }
 /* CRT scanlines + overlay */
-.crt-overlay {
-  position: relative;
-  overflow: hidden;
-}
-
 /* Líneas horizontales tipo CRT */
 .crt-overlay::before {
   content: "";
@@ -441,7 +439,14 @@
   pointer-events: none;
   z-index: 3;
 }
-
+/* Opcional: scrollbar personalizada */
+.ranking-wrapper::-webkit-scrollbar {
+  width: 6px;
+}
+.ranking-wrapper::-webkit-scrollbar-thumb {
+  background: #0ff;
+  border-radius: 3px;
+}
 .ranking-row {
   display: flex;
   justify-content: space-between;
