@@ -67,6 +67,7 @@ class Game {
 					clearInterval(this.intervalGame)
 					this.isFinish = true
 					this.sendUpdate(io)
+					return
 				}
 			} else {
 				if (nb_online_players === 1){
@@ -80,9 +81,12 @@ class Game {
 						players: this.players
 					};
 					// only save results in varios players
+					console.log("saving")
 					this.score.saveResult(result)
 					// to display pop up 
 					this.sendUpdate(io)
+					console.log("saving2")
+					return
 				}
 			}		
 			// send update
@@ -154,7 +158,7 @@ class Game {
 		console.log("starting game",this.gravity)
 		this.intervalGame = setInterval(() => {
 			//this.countGame--
-			console.log("difficult", this.gravity)
+			console.log("interval", this.gravity)
 			this.gamelogic(io)
 		},this.gravity)
 		return true

@@ -6,7 +6,7 @@ import { socket } from './services/sockets'
 import store from './store/index.js'
 
 const app = createApp(App)
-if (import.meta.env.VITE_DEBUG==='true'){console.log("starting")}
+if (import.meta.env.VITE_DEBUG==='true'){console.log("MAIN: Starting client in debuging mode")}
 app.provide('$redTetrisSocket', socket); 
 app.use(router)
 app.use(store)

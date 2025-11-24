@@ -1,124 +1,8 @@
 <template>
 <div class="container">
-  <div v-if="error.data==='NOT PARAMETERS'">
-    <Info :title="'Sorry, To enter in a Game!'" :title1="'type:'" :title2="'http://server_name_or_ip:3000/room/player_name'"/>
-  </div>
-  <div v-else-if="error.data==='WRONG USER'">
-    <Info :title="'Sorry, this Username is already in the Game!'" :title1="'This Username is already in the game.'" :title2="'Choose another Username.'"/>
-  </div>
-  <div v-else-if="error.data==='GAME STARTED'">
-    <Info :title="'Sorry, the Game Has Started!'" :title1="'This RedTetris match is already in progress.'" :title2="'Join to another game or created your own game.'"/>
-  </div>
-  <div v-else-if="error.data==='GAME FINISHED'">
-    <Info :title="'Sorry, the Game Has Finished!'" :title1="'This RedTetris match is finish.'" :title2="'Join to another game or created your own game.'"/>
-  </div>
-  <div v-else-if="game != null" class="game-layout">
-    <!-- Sección izquierda: Galería -->
-    <aside class="left-panel">
-      <h2>Galería de Tableros</h2>
-      <div class="gallery">
-        <div v-for="(game, index) in this.game.players" :key="index" >
-          <div v-if=" this.game.players[index].socket !== socket_id">
-            <p>Player: {{ this.game.players[index].name}}</p>
-            <Spectrum  :room_name="this.game.name" :game="this.game.players[index]" />
-            <!-- Aquí podrías insertar un componente Tetris en miniatura -->
-          </div>
-        </div>
-      </div>
-    </aside>
-    <!-- Sección derecha: Tablero principal -->
-    <main class="right-panel">
-      <div class="board-wrapper">
-        <div v-for="(game, index) in this.game.players" :key="index">
-          
-          <div v-if=" this.game.players[index].socket == socket_id" >
-          <Game  :room_name="this.game.name" :game="this.game.players[index]" :type="this.game.isOnePlayer"/>
-            <!-- Aquí iría el componente Tetris grande -->
-          </div>
-        </div>
-        <!-- 🔥 Línea de botones de modo -->
-        <!-- Botones centrados debajo del juego -->
-        <div class="buttons-wrapper">
-          <div
-            v-if="this.game.players[0].socket == socket_id && !this.game.isCountdown && !this.game.isStart"
-            class="mode-buttons"
-          >
-            <button
-              v-for="m in modes"
-              :key="m.value"
-              :class="{ active: mode === m.value }"
-              @click="clickMode(m.value)"
-            >
-            {{ m.label }}
-            </button>
-            <button
-              v-for="m in especial_modes"
-              :key="m.value"
-              :class="{ active: this.ghost_mode === true }"
-              @click="clickEspecialMode()"
-            >
-            {{ m.label }}
-            </button>
-          </div>
-          <button v-if="this.game.players[0].socket == socket_id & !this.game.isCountdown & !this.game.isStart" 
-          class="start-button" @click="clickStart()" @keydown.space.prevent>Start</button>
-          <button v-if="!this.game.isCountdown & !this.game.isStart" 
-          class="start-button" @click="clickRanking()" @keydown.space.prevent>Ranking</button>
-          <button v-if="this.game.players[0].socket == socket_id & !this.game.isCountdown & this.game.isStart" 
-          class="start-button" @click="clickPause()" @keydown.space.prevent>{{this.game.isPause ? "Continue":"Pause"}}</button>
-          <button v-if="this.game.players[0].socket == socket_id & !this.game.isCountdown & this.game.isStart" 
-          class="start-button" @click="clickReStart()" @keydown.space.prevent>ReStart</button>
-        </div>
-      </div>
-    </main>
-
-    <!-- pop up countdown -->
-    <div v-if="this.game != null & this.game.isCountdown" class="overlay_countdown">
-      <div class="popup_countdown">    
-        <h1>{{ this.game.name }}</h1>
-        <h3 class="popup_count"> Start in {{ this.game.countdown }} seconds...</h3>
-      </div>
-    </div>
-    <!-- pop up finish -->
-    <div v-if="this.game != null & this.game.isFinish" class="overlay_countdown">
-      <div class="popup_countdown">    
-        <h1>{{ this.game.name }}</h1>
-        <h3 class="popup_count">{{this.game.winner_socket === socket_id ? 'YOU WIN':'The game is finish'}}</h3>
-      </div>
-    </div>
-    <!-- pop up ranking -->
-    <div v-if="this.game != null & this.ranking" class="overlay_countdown">
-      <div class="popup_ranking">
-        <h1 class="ranking-title">🏆 HALL OF FAME 🏆</h1>
-        <div class="ranking-table crt-overlay">
-          <div v-for="(user, x) in this.game.ranking"  :key="x" >
-            <div class="ranking-name">{{ x + 1 }}. {{ user.name }}</div>
-            <div class="ranking-score">{{ user.score }}</div> 
-          </div>
-        </div>
-        <button
-      v-if="!this.game.isCountdown && !this.game.isStart"
-      class="retro-button"
-      @click="clickRanking()"
-      @keydown.space.prevent
-    >
-      CLOSE
-    </button>
-      </div>
-    </div>
-
-  </div>
   
-  <!--
-  <div v-if="game === null">
-    <div class="card">
-      <button type="button" @click="click">send text message </button>
-  
-      <p>
-        Edit
-        <code>components/HelloWorld.vue</code> to test HMR
-      </p>
-    </div>
+  <div v-if="debug==='true' && game===null">
+    here{{game}}here
     <form @submit.prevent="handleSubmit" class="form">
       <div class="form-group">
         <label for="roomName">Room Name</label>
@@ -144,7 +28,113 @@
     </form>
     {{socket_id}}
   </div>
-  -->
+  
+  <div v-if="error.data==='NOT PARAMETERS'">
+    <Info :title="'Sorry, To enter in a Game!'" :title1="'type:'" :title2="'http://server_name_or_ip:3000/room/player_name'"/>
+  </div>
+  <div v-else-if="error.data==='WRONG USER'">
+    <Info :title="'Sorry, this Username is already in the Game!'" :title1="'This Username is already in the game.'" :title2="'Choose another Username.'"/>
+  </div>
+  <div v-else-if="error.data==='GAME STARTED'">
+    <Info :title="'Sorry, the Game Has Started!'" :title1="'This RedTetris match is already in progress.'" :title2="'Join to another game or created your own game.'"/>
+  </div>
+  <div v-else-if="error.data==='GAME FINISHED'">
+    <Info :title="'Sorry, the Game Has Finished!'" :title1="'This RedTetris match is finish.'" :title2="'Join to another game or created your own game.'"/>
+  </div>
+  
+  <div v-else-if="game != null" class="game-layout">
+    <aside class="left-panel">
+      <h2>Galería de Tableros</h2>
+      <div class="gallery">
+        ll
+        <div v-for="(game, index) in game.players" :key="index" >
+          <div v-if=" game.socket !== socket_id">
+            <p>Player: {{ game.name}}</p>            
+            <Spectrum  :room_name="game.name" :game="game" />
+            
+          </div>
+           
+        </div>
+      </div>
+    </aside>
+    <main class="right-panel">
+      <div class="board-wrapper">
+        <div v-for="(game, index) in game.players" :key="index">        
+          <div v-if=" game.socket == socket_id" >
+          <Game  :room_name="game.name" :game="game" :type="game.isOnePlayer"/>       
+          </div>
+        </div>
+        <!-- 🔥 Línea de botones de modo -->
+        <!-- Botones centrados debajo del juego -->
+        <div class="buttons-wrapper">
+          <div
+            v-if="game.players[0].socket == socket_id && !game.isCountdown && !game.isStart"
+            class="mode-buttons"
+          >
+            <button
+              v-for="m in modes"
+              :key="m.value"
+              :class="{ active: mode === m.value }"
+              @click="clickMode(m.value)"
+            >
+            {{ m.label }}
+            </button>
+            <button
+              v-for="m in especial_modes"
+              :key="m.value"
+              :class="{ active: ghost_mode === true }"
+              @click="clickEspecialMode()"
+            >
+            {{ m.label }}
+            </button>
+          </div>
+          <button v-if="game.players[0].socket == socket_id & !game.isCountdown & !game.isStart" 
+          class="start-button" @click="clickStart()" @keydown.space.prevent>Start</button>
+          <button v-if="!game.isCountdown & !game.isStart" 
+          class="start-button" @click="clickRanking()" @keydown.space.prevent>Ranking</button>
+          <button v-if="game.players[0].socket == socket_id & !game.isCountdown & game.isStart" 
+          class="start-button" @click="clickPause()" @keydown.space.prevent>{{game.isPause ? "Continue":"Pause"}}</button>
+          <button v-if="game.players[0].socket == socket_id & !game.isCountdown & game.isStart" 
+          class="start-button" @click="clickReStart()" @keydown.space.prevent>ReStart</button>
+        </div>
+      </div>
+    </main>
+    <!-- pop up countdown -->
+    <div v-if="game != null & game.isCountdown" class="overlay_countdown">
+      <div class="popup_countdown">    
+        <h1>{{ game.name }}</h1>
+        <h3 class="popup_count"> Start in {{ game.countdown }} seconds...</h3>
+      </div>
+    </div>
+    <!-- pop up finish -->
+    <div v-if="game != null & game.isFinish" class="overlay_countdown">
+      <div class="popup_countdown">    
+        <h1>{{ game.name }}</h1>
+        <h3 class="popup_count">{{game.winner_socket === socket_id && !game.isOnePlayer ? 'YOU WIN':'The game is finish'}}</h3>
+      </div>
+    </div>
+    <!-- pop up ranking -->
+    <div v-if="game != null & ranking" class="overlay_countdown">
+      <div class="popup_ranking">
+        <h1 class="ranking-title">🏆 HALL OF FAME 🏆</h1>
+        <div class="ranking-table crt-overlay">
+          <div v-for="(user, x) in game.ranking"  :key="x" >
+            <div class="ranking-name">{{ x + 1 }}. {{ user.name }}</div>
+            <div class="ranking-score">{{ user.score }}</div> 
+          </div>
+        </div>
+        <button
+      v-if="!game.isCountdown && !game.isStart"
+      class="retro-button"
+      @click="clickRanking()"
+      @keydown.space.prevent
+    >
+      CLOSE
+    </button>
+      </div>
+    </div>
+
+  </div>
 </div>
 </template>
 
@@ -519,9 +509,6 @@ import { useStore } from 'vuex'
 import { socket } from '../services/sockets'
 import Game from "./subcomponents/game.vue"
 import Spectrum from "./subcomponents/spectrum.vue"
-import TetrisInfo from "./subcomponents/tetris_info.vue"
-import GameInfo from "./subcomponents/game_info.vue"
-import UserInfo from "./subcomponents/user_info.vue"
 import Info from "./subcomponents/info.vue"
 
 //store
@@ -537,7 +524,7 @@ const modes = ref([
   { label: "🟠 Medium", value: "medium" },
   { label: "🔴 Hard", value: "hard" },
 ])
-const espexial_modes = ref([
+const especial_modes = ref([
   { label: "👻 Ghost", value: "ghost" },
 ])
 const mode = ref('medium')
@@ -553,20 +540,23 @@ const error = computed(() => store.getters['error_store/getError'] || null)
 const clickStart = () => {
   console.log('click Start')
   const msg = {
-    command: 'restart',
+    command: 'start',
     gameName: game.value.name,
-    node: mode.value === 'medium'? 500 : mode.value === 'hard' ? 250 : 1000,
+    mode: mode.value === 'medium'? 500 : mode.value === 'hard' ? 250 : 1000,
     ghost_mode: ghost_mode.value
   }
+  if (import.meta.env.VITE_DEBUG==='true'){console.log("HOME: click Start.")}
+  if (import.meta.env.VITE_DEBUG==='true'){console.log("HOME: send msg.", msg)}
+  socket.emit('red_tetris_server', msg)
 }
 
 const clickPause = () => {
-  console.log("click Pause")
   const msg = {
     command: 'pause',
-    getName: game.value.name
+    gameName: game.value.name
   }
-  console.log("send", msg)
+  if (import.meta.env.VITE_DEBUG==='true'){console.log("HOME: click Pause.")}
+  if (import.meta.env.VITE_DEBUG==='true'){console.log("HOME: send msg.", msg)}
   socket.emit('red_tetris_server', msg)
 }
 
@@ -574,40 +564,57 @@ const clickReStart = () => {
   console.log("click ReStart")
   const msg = {
     command: 'restart',
-    getName: game.value.name,
+    gameName: game.value.name,
     mode: mode.value === 'medium' ? 500 : mode.value === 'hard' ? 250 : 1000,
     ghost_mode: ghost_mode.value
   }
-  console.log("send", msg)
+  if (import.meta.env.VITE_DEBUG==='true'){console.log("HOME: click Restart.")};
+  if (import.meta.env.VITE_DEBUG==='true'){console.log("HOME: send msg.", msg)}
   socket.emit('red_tetris_server', msg)
 }
 
 const clickMode = (selectedMode) => {
+  if (import.meta.env.VITE_DEBUG==='true'){console.log("HOME: click Mode.")}
   mode.value = selectedMode
+  if (import.meta.env.VITE_DEBUG==='true'){console.log("HOME: Mode:", mode.value)}
 }
 
 const clickEspecialMode = () => {
+  if (import.meta.env.VITE_DEBUG==='true'){console.log("HOME: click Especial Mode.")}
+  if (import.meta.env.VITE_DEBUG==='true'){console.log("HOME: Especial Mode:", !ghost_mode.value)}
   ghost_mode.value = !ghost_mode.value
 }
 
 const clickRanking = () => {
+  if (import.meta.env.VITE_DEBUG==='true'){console.log("HOME: click Ramking.")}
   ranking.value = !ranking.value
 }
 
 const keyHandler = (event) => {
   if (!game.value?.isPause) {
     if(['ArroDown', 'ArrowUp', 'ArrowRight', 'ArrowLeft', ' ', 'Escape'].indexOf(event.key) > -1) {
+      if (import.meta.env.VITE_DEBUG==='true'){console.log("HOME: keyPress:", event.key)}
       const msg = {
         command: 'move',
         gameName: game.value.name,
-        playSocket: socket_id.value,
+        playerSocket: socket_id.value,
         move: event.key
       }
       if (game.value?.isStart) {
+        if (import.meta.env.VITE_DEBUG==='true'){console.log("HOME: Send msg:", msg)}
         socket.emit('red_tetris_server', msg)
       }
     }
   }
+}
+const handleSubmit = () => {
+  const msg = {
+    command: 'join',
+    roomName: roomName.value,
+    playerName: playerName.value
+  }
+  console.log("send joinnig", msg)
+  socket.emit('red_tetris_server', msg)
 }
 
 //Watchers
@@ -625,7 +632,6 @@ watch(error, (newError) => {
 
 //Lyfecycle
 onMounted(() => {
-  console.log("update game in down")
   document.body.addEventListener('keydown', keyHandler)
 })
 

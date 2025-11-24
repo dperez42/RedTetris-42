@@ -1,89 +1,70 @@
 <template>
   <div class="tetris">
-  <!-- Room Name -->
-  <!--
-  <div class="status">
-      <span class="roomname">{{room_name}}</span>
-  </div>
-  --->
-  <!-- Board -->
-  <div class="board">
-		<div class="row" v-for="(row, y) in this.transpose_matrix(this.game.field)"  :key="y">
-      <div v-for="(cell, x) in row"  :key="x" >
-        <div class="cell" :style="{backgroundColor: isEmpty(x)}">
+    <!-- Board -->
+    <div class="board">
+      <div class="row" v-for="(row, y) in transpose_matrix(game.field)" :key="y">
+        <div v-for="(cell, x) in row" :key="x">          
+          <div class="cell" :style="{ backgroundColor: isEmpty(x)}"></div>
         </div>
       </div>
     </div>
   </div>
-  <!--- Score and username-->
-  <!--
-    <div class="status">
-      <span class="username">{{this.game.name}}</span>
-      <span class="score"> Score: {{this.game.score}}</span>
-      {{socket_id}}
-    </div>
-    -->
-  </div>
-  
 </template>
 
+<script setup>
+import { computed, ref } from 'vue'
+import { useStore } from 'vuex'
 
+// store
+const store = useStore()
 
-<script>
-import store from '../../store/index'
+// Props
+const props = defineProps({
+  room_name: {
+    type: String,
+    default: "Room Name"
+  },
+  game: {
+    type: Object,
+    default: () => ({ username: 'Player 1', score: 0, field: [] })
+  }
+})
 
-export default {
-  name: 'Spectrum',
-  components: {
-  },
-  props: {
-    room_name: {
-      type: String,
-      default: "Room Name"
-    },
-    game: {
-      type: Object,
-      default: { "username": 'Player 1', "score":0, "board":[]}
-    }
-  },
-  data() {
-	return {
-    width: 10,
-    height: 20,
-		isBorder: true,
-  	}
-  },
-  methods: {
-    getcolour(nb_col){
-      const colors = ['#0000ff','#1982c4','#6a4c93', '#ffca3a', '#8ac926','#ff924c']
-      return(colors[nb_col])
-      return('#1982c4')
-    },
-    transpose_matrix(matrix){
-      return matrix[0].map((_, x) => matrix.map(row => row[x]))
-    },
-    isEmpty(row){
+// Reactive state
+const width = ref(10)
+const height = ref(20)
+const isBorder = ref(true)
+
+// Utils
+const getcolour = (nb_col) => {
+  const colors = ['#0000ff','#1982c4','#6a4c93', '#ffca3a', '#8ac926','#ff924c']
+  return colors[nb_col]
+}
+const isEmpty = (row) => {
       let empty = '#ffffff'
-      this.game.field[row].forEach(cell => {
+      props.game.field[row].forEach(cell => {
         if (cell > 0) {
           empty = '#8ac926'
         }
       })
       return empty
-    }
-
-  },
-  computed:{
-    socket_id(){
-      return store.state.games_store.socket
-    }
-  },
-  mounted() {
-  },
-  beforeUnmount() {
-  },
 }
+const transpose_matrix = (matrix) => {
+  if (!matrix || matrix.length === 0) return []
+  return matrix[0].map((_, x) => matrix.map(row => row[x]))
+}
+
+// Color logic
+const getCellColor = (cell) => {
+  if (cell > 0) return getcolour(cell)
+  return '#ffffff'
+}
+
+// computed
+const socket_id = computed(() => store.state.games_store.socket)
+
 </script>
+
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .tetris{

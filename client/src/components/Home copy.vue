@@ -1,111 +1,8 @@
 <template>
 <div class="container">
-  <!-- Zona principal del juego -->
-  <div v-if="game != null" class="game-layout">
-    <!-- Sección izquierda: Galería -->
-    <aside class="left-panel">
-      <h2>Galería de Tableros</h2>
-      <div class="gallery">
-        <div v-for="(game, index) in this.game.players" :key="index" >
-          <div v-if=" this.game.players[index].socket !== socket_id">
-            <p>Player: {{ this.game.players[index].name}}</p>
-            <Spectrum  :room_name="this.game.name" :game="this.game.players[index]" />
-            <!-- Aquí podrías insertar un componente Tetris en miniatura -->
-          </div>
-        </div>
-      </div>
-    </aside>
-    <!-- Sección derecha: Tablero principal -->
-    <main class="right-panel">
-      <div class="board-wrapper">
-        <div v-for="(game, index) in this.game.players" :key="index">
-          
-          <div v-if=" this.game.players[index].socket == socket_id" >
-          <Game  :room_name="this.game.name" :game="this.game.players[index]" :type="this.game.isOnePlayer"/>
-            <!-- Aquí iría el componente Tetris grande -->
-          </div>
-        </div>
-        <!-- 🔥 Línea de botones de modo -->
-        <!-- Botones centrados debajo del juego -->
-        <div class="buttons-wrapper">
-          <div
-            v-if="this.game.players[0].socket == socket_id && !this.game.isCountdown && !this.game.isStart"
-            class="mode-buttons"
-          >
-            <button
-              v-for="m in modes"
-              :key="m.value"
-              :class="{ active: mode === m.value }"
-              @click="clickMode(m.value)"
-            >
-            {{ m.label }}
-            </button>
-            <button
-              v-for="m in especial_modes"
-              :key="m.value"
-              :class="{ active: this.ghost_mode === true }"
-              @click="clickEspecialMode()"
-            >
-            {{ m.label }}
-            </button>
-          </div>
-          <button v-if="this.game.players[0].socket == socket_id & !this.game.isCountdown & !this.game.isStart" 
-          class="start-button" @click="clickStart()" @keydown.space.prevent>Start</button>
-          <button v-if="!this.game.isCountdown & !this.game.isStart" 
-          class="start-button" @click="clickRanking()" @keydown.space.prevent>Ranking</button>
-          <button v-if="this.game.players[0].socket == socket_id & !this.game.isCountdown & this.game.isStart" 
-          class="start-button" @click="clickPause()" @keydown.space.prevent>{{this.game.isPause ? "Continue":"Pause"}}</button>
-          <button v-if="this.game.players[0].socket == socket_id & !this.game.isCountdown & this.game.isStart" 
-          class="start-button" @click="clickReStart()" @keydown.space.prevent>ReStart</button>
-        </div>
-      </div>
-    </main>
-
-    <!-- pop up countdown -->
-    <div v-if="this.game != null & this.game.isCountdown" class="overlay_countdown">
-      <div class="popup_countdown">    
-        <h1>{{ this.game.name }}</h1>
-        <h3 class="popup_count"> Start in {{ this.game.countdown }} seconds...</h3>
-      </div>
-    </div>
-    <!-- pop up finish -->
-    <div v-if="this.game != null & this.game.isFinish" class="overlay_countdown">
-      <div class="popup_countdown">    
-        <h1>{{ this.game.name }}</h1>
-        <h3 class="popup_count">{{this.game.winner_socket === socket_id ? 'YOU WIN':'The game is finish'}}</h3>
-      </div>
-    </div>
-    <!-- pop up ranking -->
-    <div v-if="this.game != null & this.ranking" class="overlay_countdown">
-      <div class="popup_ranking">
-        <h1 class="ranking-title">🏆 HALL OF FAME 🏆</h1>
-        <div class="ranking-table crt-overlay">
-          <div v-for="(user, x) in this.game.ranking"  :key="x" >
-            <div class="ranking-name">{{ x + 1 }}. {{ user.name }}</div>
-            <div class="ranking-score">{{ user.score }}</div> 
-          </div>
-        </div>
-        <button
-      v-if="!this.game.isCountdown && !this.game.isStart"
-      class="retro-button"
-      @click="clickRanking()"
-      @keydown.space.prevent
-    >
-      CLOSE
-    </button>
-      </div>
-    </div>
-
-  </div>
-  <div v-if="this.game == null">
-    <div class="card">
-      <button type="button" @click="click">send text message </button>
   
-      <p>
-        Edit
-        <code>components/HelloWorld.vue</code> to test HMR
-      </p>
-    </div>
+  <div v-if="debug && game===null">
+    here{{game}}here
     <form @submit.prevent="handleSubmit" class="form">
       <div class="form-group">
         <label for="roomName">Room Name</label>
@@ -131,10 +28,118 @@
     </form>
     {{socket_id}}
   </div>
+  
+  <div v-if="error.data==='NOT PARAMETERS'">
+    <Info :title="'Sorry, To enter in a Game!'" :title1="'type:'" :title2="'http://server_name_or_ip:3000/room/player_name'"/>
+  </div>
+  <div v-else-if="error.data==='WRONG USER'">
+    <Info :title="'Sorry, this Username is already in the Game!'" :title1="'This Username is already in the game.'" :title2="'Choose another Username.'"/>
+  </div>
+  <div v-else-if="error.data==='GAME STARTED'">
+    <Info :title="'Sorry, the Game Has Started!'" :title1="'This RedTetris match is already in progress.'" :title2="'Join to another game or created your own game.'"/>
+  </div>
+  <div v-else-if="error.data==='GAME FINISHED'">
+    <Info :title="'Sorry, the Game Has Finished!'" :title1="'This RedTetris match is finish.'" :title2="'Join to another game or created your own game.'"/>
+  </div>
+  
+  <div v-else-if="game != null" class="game-layout">
+    
+    <aside class="left-panel">
+      <h2>Galería de Tableros</h2>
+      <div class="gallery">
+        <div v-for="(game, index) in game.players" :key="index" >
+          <div v-if=" game.players[index].socket !== socket_id">
+            <p>Player: {{ game.players[index].name}}</p>
+            <Spectrum  :room_name="game.name" :game="game.players[index]" />
+          </div>
+        </div>
+      </div>
+    </aside>
+    
+    <main class="right-panel">
+      <div class="board-wrapper">
+        <div v-for="(game, index) in this.game.players" :key="index">
+          
+          <div v-if=" game.players[index].socket == socket_id" >
+          <Game  :room_name="game.name" :game="game.players[index]" :type="game.isOnePlayer"/>
+           
+          </div>
+        </div>
+        <!-- 🔥 Línea de botones de modo -->
+        <!-- Botones centrados debajo del juego -->
+        <div class="buttons-wrapper">
+          <div
+            v-if="this.game.players[0].socket == socket_id && !game.isCountdown && !game.isStart"
+            class="mode-buttons"
+          >
+            <button
+              v-for="m in modes"
+              :key="m.value"
+              :class="{ active: mode === m.value }"
+              @click="clickMode(m.value)"
+            >
+            {{ m.label }}
+            </button>
+            <button
+              v-for="m in especial_modes"
+              :key="m.value"
+              :class="{ active: ghost_mode === true }"
+              @click="clickEspecialMode()"
+            >
+            {{ m.label }}
+            </button>
+          </div>
+          <button v-if="game.players[0].socket == socket_id & !game.isCountdown & !game.isStart" 
+          class="start-button" @click="clickStart()" @keydown.space.prevent>Start</button>
+          <button v-if="!game.isCountdown & !game.isStart" 
+          class="start-button" @click="clickRanking()" @keydown.space.prevent>Ranking</button>
+          <button v-if="game.players[0].socket == socket_id & !game.isCountdown & game.isStart" 
+          class="start-button" @click="clickPause()" @keydown.space.prevent>{{game.isPause ? "Continue":"Pause"}}</button>
+          <button v-if="game.players[0].socket == socket_id & !game.isCountdown & game.isStart" 
+          class="start-button" @click="clickReStart()" @keydown.space.prevent>ReStart</button>
+        </div>
+      </div>
+    </main>
 
+    <!-- pop up countdown -->
+    <div v-if="game != null & game.isCountdown" class="overlay_countdown">
+      <div class="popup_countdown">    
+        <h1>{{ game.name }}</h1>
+        <h3 class="popup_count"> Start in {{ game.countdown }} seconds...</h3>
+      </div>
+    </div>
+    <!-- pop up finish -->
+    <div v-if="game != null & game.isFinish" class="overlay_countdown">
+      <div class="popup_countdown">    
+        <h1>{{ game.name }}</h1>
+        <h3 class="popup_count">{{game.winner_socket === socket_id ? 'YOU WIN':'The game is finish'}}</h3>
+      </div>
+    </div>
+    <!-- pop up ranking -->
+    <div v-if="game != null & ranking" class="overlay_countdown">
+      <div class="popup_ranking">
+        <h1 class="ranking-title">🏆 HALL OF FAME 🏆</h1>
+        <div class="ranking-table crt-overlay">
+          <div v-for="(user, x) in game.ranking"  :key="x" >
+            <div class="ranking-name">{{ x + 1 }}. {{ user.name }}</div>
+            <div class="ranking-score">{{ user.score }}</div> 
+          </div>
+        </div>
+        <button
+      v-if="!game.isCountdown && !game.isStart"
+      class="retro-button"
+      @click="clickRanking()"
+      @keydown.space.prevent
+    >
+      CLOSE
+    </button>
+      </div>
+    </div>
+
+  </div>
 </div>
-
 </template>
+
 
 <style scoped>
 .container {
@@ -500,70 +505,42 @@
 }
 </style>
 
-<script>
-import { ref } from 'vue'
+<script setup>
+import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue'
+import { useStore } from 'vuex'
 import { socket } from '../services/sockets'
 import Game from "./subcomponents/game.vue"
 import Spectrum from "./subcomponents/spectrum.vue"
-import store from '../store/index' 
+import Info from "./subcomponents/info.vue"
 
-export default {
-  name: 'Home',
-  components: {
-    Game,
-    Spectrum
-  },
-  props: {
-    },
-  data() {
-    return {
-      roomName:'test_room',
-      playerName:"test_player",
-      visible: true,
-      count: 10,
-      modes : [
-        { label: "🟢 Easy", value: "easy" },
-        { label: "🟠 Medium", value: "medium" },
-        { label: "🔴 Hard", value: "hard" },
-      ],
-      especial_modes : [
-        { label: "👻 Ghost", value: "ghost" },
-      ],
-      mode : 'medium',
-      ghost_mode : false,
-      ranking: false
-    }
-  },
-  methods: {
-    createBoard(){
-      const arr = new Array(this.width).fill(null)
-      this.game.board = arr.map(()=> new Array(this.height).fill(Math.floor(Math.random()*6)))
-      console.log(this.board)
-      //this.board = Array.from({length: this.height}, () => Array(this.width).fill(colors[Math.floor(Math.random()*colors.length)]))
-      //this.board = Array.from({length: this.height}, () => Array(this.width).fill(0))
-    },
-    handleSubmit(){
-      console.log("Joinin")
-       const msg = {
-        command: 'join',
-        playerName: this.playerName,
-        roomName: this.roomName,
-        socherId: socket.id,
-        data: ''
-      }
-      socket.emit('red_tetris_server',msg)
-    },
-    click(){
-      console.log("click")
-      const msg = {
-        command: 'join',
-        playerName: this.playerName,
-        roomName: this.roomName
-      }
-      socket.emit('red_tetris_server',msg)
-    },
-    clickStart(){
-      console.log("click Start")
+//store
+const store = useStore()
+
+//Data (con ref)
+const roomName = ref('test_room')
+const playerName = ref('test_player')
+const visible = ref(true)
+const count = ref(10)
+const modes = ref([
+  { label: "🟢 Easy", value: "easy" },
+  { label: "🟠 Medium", value: "medium" },
+  { label: "🔴 Hard", value: "hard" },
+])
+const especial_modes = ref([
+  { label: "👻 Ghost", value: "ghost" },
+])
+const mode = ref('medium')
+const ghost_mode = ref(false)
+const ranking = ref(false)
+const debug = ref(import.meta.env.VITE_DEBUG);
+// Computed
+const game = computed(() => store.getters['games_store/getGame'] || null)
+const socket_id = computed(() => store.getters['games_store/getSocket'] || null)
+const error = computed(() => store.getters['error_store/getError'] || null)
+
+//Methods
+const clickStart = () => {
+  console.log("click Start")
       const msg = {
         command: 'start',
         gameName: this.game.name,
@@ -572,92 +549,92 @@ export default {
       }
       console.log("send", msg)
       socket.emit('red_tetris_server',msg)
-    },
-    clickPause(){
-      console.log("click Pause")
-      const msg = {
-        command: 'pause',
-        gameName: this.game.name
-      }
-      console.log("send", msg)
-      socket.emit('red_tetris_server',msg)
-    },
-    clickReStart(){
-      console.log("click ReStart")
-      const msg = {
-        command: 'restart',
-        gameName: this.game.name,
-        mode : this.mode === 'medium' ? 500: this.mode === 'hard' ? 250:1000,
-        ghost: this.ghost_mode
-      }
-      console.log("send", msg)
-      socket.emit('red_tetris_server',msg)
-    },
-    clickMode(mode){
-      this.mode = mode
-    },
-    clickEspecialMode(){
-      this.ghost_mode = !this.ghost_mode 
-    },
-    clickRanking(){
-      this.ranking = !this.ranking
-    },
-    keyHandler(event){
-      if (!this.game.isPause){
-        if (['ArrowDown',  'ArrowUp',  'ArrowRight',  'ArrowLeft', ' ','Escape'].indexOf(event.key) > -1) {
-          const msg = {
-            command: 'move',
-            gameName: this.game.name,
-            playerSocket: this.socket_id,
-            move: event.key
-          }
-          if (this.game.isStart){
-            socket.emit('red_tetris_server', msg);
-          }
-        }
-      }
-    }
-  },
-  mounted() {
-    console.log("Joinin")
-       const msg = {
-        command: 'join',
-        playerName: 'Daniel',
-        roomName: 'TestRoom',
-        socherId: socket.id,
-        data: ''
-      }
-      socket.emit('red_tetris_server',msg)
-    /*
-    this.createBoard()
-    this.game.username = 'daniel'
-    this.game.score = 10
-    console.log(this.game)
-    */
-    //document.body.addEventListener('keydown', this.keyHandler);
-    //window.addEventListener('keydown', this.callback_keydown, { capture: true });
-    //window.addEventListener('keyup', this.callback_keyup, { capture: true });
-  },
-  computed:{
-    example_board() {
-      return store.state.games_store.example_board
-    },
-    game(){
-      return store.state.games_store.game
-    },
-    socket_id(){
-      return store.state.games_store.socket
-    }
-  },
-  beforeMount() {
-    document.body.addEventListener('keydown', this.keyHandler);
-    //window.addEventListener('keydown', this.callback_keydown, { capture: true });
-    //window.addEventListener('keyup', this.callback_keyup, { capture: true });
-  },
-  beforeUnmount() {
-    document.body.removeEventListener('keydown', this.keyHandler);
-    //window.removeEventListener('keydown', callback_keydown,  { capture: true });
-    //window.removeEventListener('keyup', this.callback_keyup, { capture: true });
-  },
 }
+
+const clickPause = () => {
+  console.log("click Pause")
+  const msg = {
+    command: 'pause',
+    getName: game.value.name
+  }
+  console.log("send", msg)
+  socket.emit('red_tetris_server', msg)
+}
+
+const clickReStart = () => {
+  console.log("click ReStart")
+  const msg = {
+    command: 'restart',
+    getName: game.value.name,
+    mode: mode.value === 'medium' ? 500 : mode.value === 'hard' ? 250 : 1000,
+    ghost_mode: ghost_mode.value
+  }
+  console.log("send", msg)
+  socket.emit('red_tetris_server', msg)
+}
+
+const clickMode = (selectedMode) => {
+  mode.value = selectedMode
+}
+
+const clickEspecialMode = () => {
+  ghost_mode.value = !ghost_mode.value
+}
+
+const clickRanking = () => {
+  ranking.value = !ranking.value
+}
+
+const keyHandler = (event) => {
+  if (!game.value?.isPause) {
+    if(['ArroDown', 'ArrowUp', 'ArrowRight', 'ArrowLeft', ' ', 'Escape'].indexOf(event.key) > -1) {
+      const msg = {
+        command: 'move',
+        gameName: game.value.name,
+        playSocket: socket_id.value,
+        move: event.key
+      }
+      if (game.value?.isStart) {
+        socket.emit('red_tetris_server', msg)
+      }
+    }
+  }
+}
+const handleSubmit = () => {
+  const msg = {
+    command: 'join',
+    roomName: roomName.value,
+    playerName: playerName.value
+  }
+  console.log("send joinnig", msg)
+  socket.emit('red_tetris_server', msg)
+}
+
+//Watchers
+watch(game, (newGame) => {
+  console.log("Game change:", newGame)
+})
+
+watch(socket_id, (newSocket) => {
+  console.log("Socket change:", newSocket)
+})
+
+watch(error, (newError) => {
+  console.log("Error change:", newError)
+})
+
+//Lyfecycle
+onMounted(() => {
+  if (debug.value){
+    console.log("cargo fake users to develop")
+
+  }
+  document.body.addEventListener('keydown', keyHandler)
+})
+
+//
+onBeforeUnmount(() => {
+  document.body.removeEventListener('keydown', keyHandler)
+})
+
 </script>

@@ -1,103 +1,104 @@
 <template>
   <div class="tetris">
-  <!-- Info del jugador dentro del tablero -->
+
+    <!-- Info del jugador -->
     <div class="tetris-info">
       <div class="roomname">{{ room_name }}</div>
       <div class="username">Player: {{ game.name }}</div>
       <div class="score">Score: {{ game.score }}</div>
     </div>
-  <!-- Board -->
+
+    <!-- Board -->
     <div class="board">
-      <div class="row" v-for="(row, y) in this.transpose_matrix(this.game.field_piece)"  :key="y">
-        <div v-for="(cell, x) in row"  :key="x" >
-          <div class="cell" :style="{
-            '--cell-color': getcolour(cell) || '#222',
-            border: 19 - x < this.game.freeze_lines ? '3px solid #f00' : getcolour(cell) === '#ffffff' ? '3px solid #000' : '3px solid '+darkenColor(getcolour(cell), 0.6),
-            animation: getcolour(cell) === '#ffffff' ? 'none' : 'pulseCell 1.5s infinite alternate ease-in-out' /* pulseCell, pulseNeon*/
+      <div class="row" v-for="(row, y) in transpose_matrix(game.field_piece)" :key="y">
+        <div v-for="(cell, x) in row" :key="x">
+          <div
+            class="cell"
+            :style="{
+              '--cell-color': getcolour(cell) || '#222',
+              border:
+                19 - x < game.freeze_lines
+                  ? '3px solid #f00'
+                  : getcolour(cell) === '#ffffff'
+                  ? '3px solid #000'
+                  : '3px solid ' + darkenColor(getcolour(cell), 0.6),
+              animation:
+                getcolour(cell) === '#ffffff'
+                  ? 'none'
+                  : 'pulseCell 1.5s infinite alternate ease-in-out'
             }"
-          
-          >
-          <!--{{cell}}-->
-          </div>
+          ></div>
         </div>
       </div>
     </div>
- 
-  
-  <!-- pop up game over -->
-    <div v-if="this.game.gameOver" class="overlay_gameover">
-      <div class="popup_gameover">    
+
+    <!-- Popup Game Over -->
+    <div v-if="game.gameOver" class="overlay_gameover">
+      <div class="popup_gameover">
         <h2>🧱 Game Over!</h2>
-        <p>Your score: {{ this.game.score }}</p>
-        <button v-if="this.type" class="start-button" @click="clickReStart()" @keydown.space.prevent>Start</button>
+        <p>Your score: {{ game.score }}</p>
+        <button
+          v-if="type"
+          class="start-button"
+          @click="clickReStart"
+          @keydown.space.prevent
+        >
+          Start
+        </button>
       </div>
     </div>
+
   </div>
-  
 </template>
 
-<script>
+<script setup>
+import { ref } from 'vue'
 import { socket } from '../../services/sockets'
 
-export default {
-  name: 'Game',
-  components: {
+// Props
+const { room_name, game, type } = defineProps({
+  room_name: { type: String, default: "Room Name" },
+  game: {
+    type: Object,
+    default: () => ({ username: 'Player 1', score: 0, field_piece: [] })
   },
-  props: {
-    room_name: {
-      type: String,
-      default: "Room Name"
-    },
-    game: {
-      type: Object,
-      default: { "username": 'Player 1', "score":0, "board":[]}
-    },
-    type: {
-      type: Boolean,
-      default: true
-    },
-  },
-  data() {
-	return {
-    width: 10,
-    height: 20,
-		isBorder: true,
-  	}
-  },
-  methods: {
-    getcolour(nb_col){
-      const colors = ['#ffffff','#ff595e','#ffca3a', '#1982c4', '#8ac926','#6a4c93']
-      return(colors[nb_col])
-    },
-    darkenColor(hex, amount = 0.2) {
-      // Convierte a RGB
-      let c = hex.substring(1); // Quita #
-      const rgb = c.match(/.{2}/g).map(x => parseInt(x,16));
-      // Oscurece cada canal
-      const darkRgb = rgb.map(v => Math.floor(v * (1 - amount)));
-      // Convierte de vuelta a hex
-      return '#' + darkRgb.map(v => v.toString(16).padStart(2,'0')).join('');
-    },
-    transpose_matrix(matrix){
-      return matrix[0].map((_, x) => matrix.map(row => row[x]))
-    },
-    clickReStart(){
-      console.log("click ReStart")
-      const msg = {
-        command: 'restart',
-        gameName: this.room_name
-      }
-      console.log("send", msg)
-      socket.emit('red_tetris_server',msg)
-    },
+  type: { type: Boolean, default: true }
+})
 
-  },
-  mounted() {
-  },
-  beforeUnmount() {
-  },
+// Reactive state
+const width = ref(10)
+const height = ref(20)
+const isBorder = ref(true)
+
+// Métodos
+const getcolour = (nb_col) => {
+  const colors = ['#ffffff','#ff595e','#ffca3a','#1982c4','#8ac926','#6a4c93']
+  return colors[nb_col] || '#ffffff'
+}
+
+const darkenColor = (hex, amount = 0.2) => {
+  if (!hex.startsWith('#') || hex.length !== 7) return hex
+  const rgb = hex.substring(1).match(/.{2}/g).map(v => parseInt(v,16))
+  const darker = rgb.map(v => Math.floor(v * (1 - amount)))
+  return '#' + darker.map(v => v.toString(16).padStart(2,'0')).join('')
+}
+
+const transpose_matrix = (matrix) => {
+  if (!matrix || matrix.length === 0) return []
+  return matrix[0].map((_, x) => matrix.map(row => row[x]))
+}
+
+const clickReStart = () => {
+  const msg = {
+    command: 'restart',
+    gameName: room_name
+  }
+  if (import.meta.env.VITE_DEBUG==='true'){console.log("GAME: click Restart.")};
+  if (import.meta.env.VITE_DEBUG==='true'){console.log("GAME: send msg.", msg)}
+  socket.emit('red_tetris_server', msg)
 }
 </script>
+
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .tetris{

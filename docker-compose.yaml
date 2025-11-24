@@ -32,7 +32,7 @@ services:
     depends_on:
       - server
     ports:
-      - "8010:8010" # same port in vite.config.js for development
+      - "8080:8080" # same port in vite.config.js for development
       #- "443:443"
     volumes:
       - ./client:/app

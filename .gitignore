@@ -9,12 +9,12 @@ lerna-debug.log*
 package-lock.json
 
 # Environment variables
-.env
+#.env
 .env.local
 .env.*.local
 
 # Build outputs
-dist/
+#dist/
 dist-ssr/
 build/
 *.local

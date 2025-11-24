@@ -8,11 +8,7 @@ export default {
     // Mutations are responsible for changing state
     mutations: {
         setGame(state, game) {
-            console.log("store u4pdate", game);
-            console.log("store u4pdate", game);
-            state.game = game ? { ...game } : null;  // replace reference completely
-            console.log("store up4date2", state.game);
-                console.log("store 4update2", state.game);
+            state.game = game ? { ...game } : null;  // replace reference completely        
         },
         
         setSocket(state, socket){
@@ -25,10 +21,6 @@ export default {
         },
         setStart(state, data){
             state.game.isStart = data.isStart
-        },
-        setExample(state, example_board){
-            console.log("store")
-            state.example_board = example_board
         }
     },
     actions: {
