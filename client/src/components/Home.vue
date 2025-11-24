@@ -43,59 +43,67 @@
   </div>
   
   <div v-else-if="game != null" class="game-layout">
-    <aside class="left-panel">
-      <h2>Galería de Tableros</h2>
-      <div class="gallery">
-        <div v-for="(player_game, index) in game.players" :key="index" >
-          <div v-if=" player_game.socket !== socket_id">
-            <p>Player: {{ player_game.name}}</p>            
-            <Spectrum  :room_name="game.name" :game="player_game" />
-          </div>         
-        </div>
-      </div>
-    </aside>
-    <main class="right-panel">
-      <div class="board-wrapper">
-        <div v-for="(player_game, index) in game.players" :key="index">        
-          <div v-if=" player_game.socket == socket_id" >
-          <Game  :room_name="game.name" :game="player_game" :type="player_game.isOnePlayer"/>    
+    <div class="game-content">
+      <aside class="left-panel">
+        <h2>Galería de Tableros</h2>
+        <div class="gallery">
+          <div v-for="(player_game, index) in game.players" :key="index" >
+            <div v-if=" player_game.socket !== socket_id">
+              <p>Player: {{ player_game.name}}</p>            
+              <Spectrum  :room_name="game.name" :game="player_game" />
+            </div>         
           </div>
         </div>
-        <!-- 🔥 Línea de botones de modo -->
-        <!-- Botones centrados debajo del juego -->
-        <div class="buttons-wrapper">
-          <div
-            v-if="game.players[0].socket == socket_id && !game.isCountdown && !game.isStart"
-            class="mode-buttons"
-          >
-            <button
-              v-for="m in modes"
-              :key="m.value"
-              :class="{ active: mode === m.value }"
-              @click="clickMode(m.value)"
-            >
-            {{ m.label }}
-            </button>
-            <button
-              v-for="m in especial_modes"
-              :key="m.value"
-              :class="{ active: ghost_mode === true }"
-              @click="clickEspecialMode()"
-            >
-            {{ m.label }}
-            </button>
+      </aside>
+      <main class="right-panel">
+        <div class="board-wrapper">
+          <div v-for="(player_game, index) in game.players" :key="index">        
+            <div v-if=" player_game.socket == socket_id" >
+            <Game  :room_name="game.name" :game="player_game" :type="player_game.isOnePlayer"/>    
+            </div>
           </div>
-          <button v-if="game.players[0].socket == socket_id & !game.isCountdown & !game.isStart" 
-          class="start-button" @click="clickStart()" @keydown.space.prevent>Start</button>
-          <button v-if="!game.isCountdown & !game.isStart" 
-          class="start-button" @click="clickRanking()" @keydown.space.prevent>Ranking</button>
-          <button v-if="game.players[0].socket == socket_id & !game.isCountdown & game.isStart" 
-          class="start-button" @click="clickPause()" @keydown.space.prevent>{{game.isPause ? "Continue":"Pause"}}</button>
-          <button v-if="game.players[0].socket == socket_id & !game.isCountdown & game.isStart" 
-          class="start-button" @click="clickReStart()" @keydown.space.prevent>ReStart</button>
+          <!-- 🔥 Línea de botones de modo -->
+          <!-- Botones centrados debajo del juego -->
+          <div class="buttons-wrapper">
+            <div
+              v-if="game.players[0].socket == socket_id && !game.isCountdown && !game.isStart"
+              class="mode-buttons"
+            >
+              <button
+                v-for="m in modes"
+                :key="m.value"
+                :class="{ active: mode === m.value }"
+                @click="clickMode(m.value)"
+              >
+              {{ m.label }}
+              </button>
+              <button
+                v-for="m in especial_modes"
+                :key="m.value"
+                :class="{ active: ghost_mode === true }"
+                @click="clickEspecialMode()"
+              >
+              {{ m.label }}
+              </button>
+            </div>
+            <button v-if="game.players[0].socket == socket_id & !game.isCountdown & !game.isStart" 
+            class="start-button" @click="clickStart()" @keydown.space.prevent>Start</button>
+            <button v-if="!game.isCountdown & !game.isStart" 
+            class="start-button" @click="clickRanking()" @keydown.space.prevent>Ranking</button>
+            <button v-if="game.players[0].socket == socket_id & !game.isCountdown & game.isStart" 
+            class="start-button" @click="clickPause()" @keydown.space.prevent>{{game.isPause ? "Continue":"Pause"}}</button>
+            <button v-if="game.players[0].socket == socket_id & !game.isCountdown & game.isStart" 
+            class="start-button" @click="clickReStart()" @keydown.space.prevent>ReStart</button>
+          </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </div>
+    <!-- 👇 Footer agregado -->
+    <footer class="game-footer">
+      <p>© 2025 RedTetris Game 42 School | Developed by juan-gon & dperez-z</p>
+      <p>Version 1.0 | All rights reserved</p>
+    </footer>
+
     <!-- pop up countdown -->
     <div v-if="game != null & game.isCountdown" class="overlay_countdown">
       <div class="popup_countdown">    
@@ -151,12 +159,16 @@
 
 .game-layout {
   display: flex;
-  width: 100%;
-  height: 100%;
+  flex-direction: column;
+  min-height: 100vh; /* ocupa toda la altura de la ventana */
+}
+.game-content {
+  flex: 1; /* ocupa todo el espacio disponible antes del footer */
+  display: flex; /* para que aside + main queden lado a lado */
 }
 /* Sección izquierda */
 .left-panel {
-  width: 50%;
+  width: 500px;
   background-color: #c38b8b;
   padding: 1rem;
   overflow-y: auto;
@@ -187,7 +199,7 @@
   justify-content: center;
   align-items: center;
   background-color: rgb(173, 37, 37);
-  min-height: 100vh;        /* full viewport height */
+  
 }
 
 .board-wrapper {
@@ -504,6 +516,17 @@
   to {
     text-shadow: 0 0 20px #ff004d, 0 0 40px #ff004d;
   }
+}
+.game-footer {
+  width: 100%;
+  padding: 10px 20px;
+  background-color: #111;
+  color: #0ff;
+  text-align: center;
+  font-family: 'Press Start 2P', monospace; /* estilo retro */
+  font-size: 12px;
+  border-top: 2px solid #0ff;
+  
 }
 </style>
 
