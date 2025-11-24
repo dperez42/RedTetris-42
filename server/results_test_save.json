@@ -1,0 +1,16 @@
+[
+  {
+    "winner": "test_player",
+    "date": "2025-11-19T22:43:09.180Z",
+    "players": [
+      {
+        "name": "test_playgger2",
+        "score": 5
+      },
+      {
+        "name": "test_plggayer10",
+        "score": 3
+      }
+    ]
+  }
+]
