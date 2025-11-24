@@ -3,7 +3,7 @@ const path = require("path");
 
 class Score {
 	constructor(filename = "results.json") { 
-		console.log("init class Score")
+		//console.log("init class Score")
 		this.resultsFile = path.join(process.cwd(), filename);
 		this.results = this.loadResult()
 		this.ranking = []
@@ -35,24 +35,24 @@ class Score {
 		  // redo ranking & send
 		  return true
 		} catch (err) {
-		  console.error("❌ Error saving result:", err);
+		  console.error("SCORE: Error saving result:", err);
 		}
 	}
 	// load result from file "results.json"
 	loadResult(){
-		console.log("reading scores from.")
+		//console.log("SCORE: Loading results.")
 		try {
 			if (fs.existsSync(this.resultsFile)) {
 			  const data = fs.readFileSync(this.resultsFile, "utf-8");
 			  const results = JSON.parse(data);
-			  console.log(`📄 Loaded ${results.length} saved results`);
+			  //console.log(`SCORE: Loaded ${results.length} saved results`)
 			  return results;
 			} else {
-			  console.log("ℹ️ No results file found, returning empty list");
+			  console.log(" No results file found, returning empty list");
 			  return [];
 			}
 		  } catch (err) {
-			console.error("❌ Error loading results:", err);
+			console.error("SCORE: Error loading results:", err);
 			return [];
 		  }
 	}
@@ -72,8 +72,7 @@ class Score {
 		const ranking = Object.entries(scores)
 		.map(([name, Score]) => ({ name, Score }))
 		.sort((a, b) => b.Score - a.Score);
-  
-	  	//console.log("🏆 Ranking calculado:", ranking);
+	  	//console.log("SCORE: Ranking calculado:", ranking);
 	  	this.ranking = ranking
 	}
 	// get ranking

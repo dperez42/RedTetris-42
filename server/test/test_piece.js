@@ -89,7 +89,6 @@ describe('Piece', function () {
     describe('check if Collision', function () {
         let piece3  = new Piece();
         piece3.newPiece()
-        console.log(piece3)
         it ('Should be able check if Collision', function() {
             assert.equal(JSON.stringify(piece3.checkCollision(field_piece)), JSON.stringify(false));
             assert.equal(JSON.stringify(piece3.checkCollision(field_piece_collision)), JSON.stringify(true));
@@ -109,7 +108,6 @@ describe('Piece', function () {
         piece4.width=3
         piece4.x=0
         piece4.y=17
-        console.log(piece4)
         it ('Check clear lines', function() {
             assert.equal(JSON.stringify(piece.clearlines(field_piece_collision,0)), JSON.stringify(1));
             assert.equal(JSON.stringify(piece.clearlines(field_piece_collision,1)), JSON.stringify(0));
@@ -125,7 +123,7 @@ describe('Piece', function () {
     }); 
     describe('moving piece x', function () {
         let piece10  = new Piece();
-        piece10.newPiece() //get first piece 
+        piece10.newPiece(0,0) //test with horizontal bar
         it ('Should be able to move the piece x', function() {
             piece10.right(field_piece)
             assert.equal(JSON.stringify(piece10.x), JSON.stringify(5));
@@ -135,7 +133,7 @@ describe('Piece', function () {
             piece10.right(field_piece)
             piece10.right(field_piece)
             piece10.right(field_piece)
-            assert.equal(JSON.stringify(piece10.x), JSON.stringify(7));
+            assert.equal(JSON.stringify(piece10.x), JSON.stringify(6));
 	    });
         it ('Should be able to move the piece x. - out limits', function() {
             piece10.x=0

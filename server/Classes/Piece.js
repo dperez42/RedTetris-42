@@ -33,11 +33,11 @@ class ClassTipo {
 		this.penalty_lines = 0
 		this.GameOver = false
 	}
-	newPiece (){
-		this.index_piece = Math.floor(Math.random() * 7);
+	newPiece (ind = Math.floor(Math.random() * 7), rot = Math.floor(Math.random() * 4)) {
+		this.index_piece = ind;
 		this.x = 4
 		this.y = 0
-		this.rotation = Math.floor(Math.random() * 3)
+		this.rotation = rot
 		this.width =  tetriminios[this.index_piece].rotation[this.rotation][0].length
 		this.height = tetriminios[this.index_piece].rotation[this.rotation].length
 		this.data = tetriminios[this.index_piece].rotation[this.rotation]

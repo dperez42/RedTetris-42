@@ -46,7 +46,6 @@
     <aside class="left-panel">
       <h2>Galería de Tableros</h2>
       <div class="gallery">
-        ll
         <div v-for="(game, index) in game.players" :key="index" >
           <div v-if=" game.socket !== socket_id">
             <p>Player: {{ game.name}}</p>            

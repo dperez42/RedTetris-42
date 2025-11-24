@@ -90,7 +90,7 @@ describe('Game', function () {
         game2.addPlayer(player1,'odFA97e3F_mYPJ0NAAAD')
         game2.addPlayer(player2,'FFFFFFFFFFFFFFFFFFFF')
         game2.delPlayer('Player1')
-        it ('Should be able to delte a player by his name in a game object', function() {     
+        it ('Should be able to delete a player by his name in a game object', function() {     
               assert.equal(JSON.stringify(game2.getName()), JSON.stringify('Game2'));
               assert.equal(JSON.stringify(game2.getSockets()), JSON.stringify(["odFA97e3F_mYPJ0NAAAD","FFFFFFFFFFFFFFFFFFFF"]));
               assert.equal(JSON.stringify(game2.getPlayers()), JSON.stringify([{"sizeColumn":10,"sizeRow":20,"name":"Player2","socket":"FFFFFFFFFFFFFFFFFFFF","piece":{"index_piece":6,"x":4,"y":0,"rotation":1,"width":3,"height":3,"data":[[0,0,1],[0,1,1],[0,1,0]],"color":3,"nb_piece":1,"score":0,"penalty_lines":0,"GameOver":false},"nb_piece":1,"field":[[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0]],"field_piece":[[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0]],"score":0,"freeze_lines":0,"gameOver":false}]));
@@ -102,7 +102,7 @@ describe('Game', function () {
         game3.addPlayer(player1,'odFA97e3F_mYPJ0NAAAD')
         game3.addPlayer(player2,'FFFFFFFFFFFFFFFFFFFF')
         game3.delPlayerBySocket('odFA97e3F_mYPJ0NAAAD')
-        it ('Should be able to delte a player by his name in a game object', function() {     
+        it ('Should be able to delete a player by his name in a game object', function() {     
               assert.equal(JSON.stringify(game3.getName()), JSON.stringify('Game2'));
               assert.equal(JSON.stringify(game3.getSockets()), JSON.stringify(["FFFFFFFFFFFFFFFFFFFF"]));
               assert.equal(JSON.stringify(game3.getPlayers()), JSON.stringify([{"sizeColumn":10,"sizeRow":20,"name":"Player2","socket":"FFFFFFFFFFFFFFFFFFFF","piece":{"index_piece":6,"x":4,"y":0,"rotation":1,"width":3,"height":3,"data":[[0,0,1],[0,1,1],[0,1,0]],"color":3,"nb_piece":1,"score":0,"penalty_lines":0,"GameOver":false},"nb_piece":1,"field":[[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0]],"field_piece":[[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0]],"score":0,"freeze_lines":0,"gameOver":false}]));
@@ -151,8 +151,14 @@ describe('Game', function () {
         });
     });
     describe('send update the game', function () {
-        it ('Should be able to send message update', function() {     
-            assert.equal(JSON.stringify(game.sendUpdate(io)), JSON.stringify({"command":"update","data":{"name":"Game1","players":[],"list_pieces":[{"index_piece":6,"x":4,"y":0,"rotation":1,"color":3},{"index_piece":1,"x":4,"y":0,"rotation":3,"color":2},{"index_piece":2,"x":4,"y":0,"rotation":0,"color":1},{"index_piece":0,"x":4,"y":0,"rotation":1,"color":5},{"index_piece":6,"x":4,"y":0,"rotation":1,"color":4}],"ranking":[{"name":"test_player2","Score":15},{"name":"test_player10","Score":9},{"name":"test_player","Score":6},{"name":"test_playgger2","Score":5},{"name":"test_plggayer10","Score":3},{"name":"test_player3","Score":0}],"isStart":false,"isFinish":false,"winner":null,"winner_socket":null,"gravity":500,"isCountdown":false,"countdown":5,"isPause":false,"isOnePlayer":true}}));
+        it ('Should be able to send message update', function() {  
+            let actual_object =  game.sendUpdate(io)  
+            // Elimino el ranking pues varia 
+            delete actual_object.data.ranking
+            let expected_object = {"command":"update","data":{"name":"Game1","players":[],"list_pieces":[{"index_piece":6,"x":4,"y":0,"rotation":1,"color":3},{"index_piece":1,"x":4,"y":0,"rotation":3,"color":2},{"index_piece":2,"x":4,"y":0,"rotation":0,"color":1},{"index_piece":0,"x":4,"y":0,"rotation":1,"color":5},{"index_piece":6,"x":4,"y":0,"rotation":1,"color":4}],"ranking":[{"name":"test_player2","Score":15},{"name":"test_player10","Score":9},{"name":"test_player","Score":6},{"name":"test_playgger2","Score":5},{"name":"test_plggayer10","Score":3},{"name":"test_player3","Score":0}],"isStart":false,"isFinish":false,"winner":null,"winner_socket":null,"gravity":500,"isCountdown":false,"countdown":5,"isPause":false,"isOnePlayer":true}}
+            delete expected_object.data.ranking
+            //console.log(expected_object)
+            assert.deepEqual(actual_object, expected_object);
         });
     });
     describe('set pause', function () {

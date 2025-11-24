@@ -22,7 +22,7 @@ describe('Score', function () {
     });
     describe('load results', function () {
         let score = new Score('results_test.json')
-        console.log(score.ranking)
+        //console.log(score.ranking)
         it ('Should be able to load results in a Score object', function() {     
               assert.equal(JSON.stringify(score.results), JSON.stringify([{"game":"test_room","winner":"test_player","date":"2025-11-03T18:24:05.465Z","players":[{"name":"test_playgger2","score":5},{"name":"test_plggayer10","score":3}]},{"game":"test_room2","winner":"test_player1","date":"2025-11-03T18:24:05.465Z","players":[{"name":"test_player1","score":5},{"name":"test_plggayer10","score":3}]}]));
         });

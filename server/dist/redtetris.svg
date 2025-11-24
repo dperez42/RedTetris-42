@@ -1,0 +1,43 @@
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+
+  <!-- Fondo negro retro -->
+  <rect width="32" height="32" fill="#000"/>
+
+  <!-- I (cyan) -->
+  <rect x="2"  y="2" width="6" height="6" fill="#00FFFF"/>
+  <rect x="8"  y="2" width="6" height="6" fill="#00FFFF"/>
+  <rect x="14" y="2" width="6" height="6" fill="#00FFFF"/>
+  <rect x="20" y="2" width="6" height="6" fill="#00FFFF"/>
+
+  <!-- T (morado) -->
+  <rect x="2"  y="10" width="6" height="6" fill="#AA00FF"/>
+  <rect x="8"  y="10" width="6" height="6" fill="#AA00FF"/>
+  <rect x="14" y="10" width="6" height="6" fill="#AA00FF"/>
+  <rect x="8"  y="16" width="6" height="6" fill="#AA00FF"/>
+
+  <!-- S (verde) -->
+  <rect x="2"  y="22" width="6" height="6" fill="#00FF00"/>
+  <rect x="8"  y="22" width="6" height="6" fill="#00FF00"/>
+  <rect x="8"  y="28" width="6" height="6" fill="#00FF00"/>
+  <rect x="14" y="28" width="6" height="6" fill="#00FF00"/>
+
+  <!-- Z (rojo) -->
+  <rect x="16" y="22" width="6" height="6" fill="#FF4444"/>
+  <rect x="22" y="22" width="6" height="6" fill="#FF4444"/>
+  <rect x="22" y="28" width="6" height="6" fill="#FF4444"/>
+  <rect x="28" y="28" width="6" height="6" fill="#FF4444"/>
+
+  <!-- J (azul) -->
+  <rect x="20" y="4" width="6" height="6" fill="#3366FF"/>
+  <rect x="20" y="10" width="6" height="6" fill="#3366FF"/>
+  <rect x="20" y="16" width="6" height="6" fill="#3366FF"/>
+  <rect x="14" y="16" width="6" height="6" fill="#3366FF"/>
+
+  <!-- L (naranja) -->
+  <rect x="26" y="4" width="6" height="6" fill="#FF8800"/>
+  <rect x="26" y="10" width="6" height="6" fill="#FF8800"/>
+  <rect x="26" y="16" width="6" height="6" fill="#FF8800"/>
+  <rect x="32" y="16" width="6" height="6" fill="#FF8800"
+        transform="translate(-6,0)"/>
+
+</svg>

@@ -96,5 +96,19 @@
         "score": 0
       }
     ]
+  },
+  {
+    "winner": "daniel1",
+    "date": "2025-11-24T18:24:05.132Z",
+    "players": [
+      {
+        "name": "daniel",
+        "score": 0
+      },
+      {
+        "name": "daniel1",
+        "score": 0
+      }
+    ]
   }
 ]
