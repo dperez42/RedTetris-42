@@ -164,7 +164,7 @@ class Game {
 		console.log("starting game",this.gravity)
 		this.intervalGame = setInterval(() => {
 			//this.countGame--
-			console.log("interval", this.gravity)
+			//console.log("interval", this.gravity)
 			this.gamelogic(io)
 		},this.gravity)
 		return true

@@ -149,9 +149,12 @@
 
 <style scoped>
 .container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  width: 100%;
   justify-content: center;
-  align-items: center;
-  height: 100vh;
+  align-items: center;  
   font-family: "Segoe UI", sans-serif;
   background: #111;
   color: white;
@@ -159,12 +162,15 @@
 
 .game-layout {
   display: flex;
+  flex: 1;
+  width: 100%; 
   flex-direction: column;
-  min-height: 100vh; /* ocupa toda la altura de la ventana */
+  /*min-height: 100vh; /* ocupa toda la altura de la ventana */
 }
 .game-content {
   flex: 1; /* ocupa todo el espacio disponible antes del footer */
   display: flex; /* para que aside + main queden lado a lado */
+  width: 100%;
 }
 /* Sección izquierda */
 .left-panel {
@@ -196,10 +202,12 @@
 .right-panel {
   flex: 1;
   display: flex;
+  width: auto;
+  max-width: none;   /* evita que el flex crezca más de lo debido */
   justify-content: center;
   align-items: center;
-  background-color: rgb(173, 37, 37);
-  
+  /*background-color: rgb(173, 37, 37);*/
+  background: url('../../public/tetris_bg.jpeg') center/cover no-repeat;
 }
 
 .board-wrapper {
