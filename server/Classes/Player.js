@@ -64,15 +64,15 @@ class ClassTipo {
                 field_temp[i][j]=this.field[i][j];
 		 }
 		}
-		if (!ghost_mode || this.piece.y<2 ){ 
-			for (let i = this.piece.y; i < this.piece.y + this.piece.height; i++){
-			for (let j = this.piece.x; j < (this.piece.x +  this.piece.width); j++){
+		if (!ghost_mode || this.piece.y<2 ){
+			for (let pieceRow = 0; pieceRow < this.piece.height; pieceRow++){
+			for (let pieceCol = 0; pieceCol < this.piece.width; pieceCol++){
+				const i = this.piece.y + pieceRow;
+				const j = this.piece.x + pieceCol;
 				//// solo pinta lo que esta dentro de los limites
-				if ((i >=0 & i <20) & (j>=0 & j <10)){
-					//field_temp[i][j]=0;
-					if (this.piece.data[i-this.piece.y][j-this.piece.x]===1){
-						field_temp[i][j]=this.piece.color;
-					}
+				if ((i >=0 && i <20) && (j>=0 && j <10) &&
+				    this.piece.data[pieceRow] && this.piece.data[pieceRow][pieceCol]===1){
+					field_temp[i][j]=this.piece.color;
 				}
 			}
 			}

@@ -86,13 +86,13 @@
               {{ m.label }}
               </button>
             </div>
-            <button v-if="game.players[0].socket == socket_id & !game.isCountdown & !game.isStart" 
+            <button v-if="game.players[0].socket == socket_id && !game.isCountdown && !game.isStart"
             class="start-button" @click="clickStart()" @keydown.space.prevent>Start</button>
-            <button v-if="!game.isCountdown & !game.isStart" 
+            <button v-if="!game.isCountdown && !game.isStart"
             class="start-button" @click="clickRanking()" @keydown.space.prevent>Ranking</button>
-            <button v-if="game.players[0].socket == socket_id & !game.isCountdown & game.isStart" 
+            <button v-if="game.players[0].socket == socket_id && !game.isCountdown && game.isStart"
             class="start-button" @click="clickPause()" @keydown.space.prevent>{{game.isPause ? "Continue":"Pause"}}</button>
-            <button v-if="game.players[0].socket == socket_id & !game.isCountdown & game.isStart" 
+            <button v-if="game.players[0].socket == socket_id && !game.isCountdown && game.isStart"
             class="start-button" @click="clickReStart()" @keydown.space.prevent>ReStart</button>
           </div>
         </div>
@@ -105,21 +105,28 @@
     </footer>
 
     <!-- pop up countdown -->
-    <div v-if="game != null & game.isCountdown" class="overlay_countdown">
+    <div v-if="game != null && game.isCountdown" class="overlay_countdown">
       <div class="popup_countdown">    
         <h1>{{ game.name }}</h1>
         <h3 class="popup_count"> Start in {{ game.countdown }} seconds...</h3>
       </div>
     </div>
     <!-- pop up finish -->
-    <div v-if="game != null & game.isFinish" class="overlay_countdown">
-      <div class="popup_countdown">    
+    <div v-if="game != null && game.isFinish" class="overlay_countdown">
+      <div class="popup_countdown">
         <h1>{{ game.name }}</h1>
         <h3 class="popup_count">{{game.winner_socket === socket_id && !game.isOnePlayer ? 'YOU WIN':'The game is finish'}}</h3>
+        <button
+          v-if="game.players[0].socket == socket_id"
+          class="start-button"
+          @click="clickReStart()"
+          @keydown.space.prevent>
+          Restart Game
+        </button>
       </div>
     </div>
     <!-- pop up ranking -->
-    <div v-if="game != null & ranking" class="overlay_countdown">
+    <div v-if="game != null && ranking" class="overlay_countdown">
       <div class="popup_ranking">
         <h1 class="ranking-title">🏆 HALL OF FAME 🏆</h1>
         <div class="ranking-wrapper crt-overlay">
@@ -655,6 +662,7 @@ const handleSubmit = () => {
 //Watchers
 watch(game, (newGame) => {
   console.log("Game change:", newGame)
+  console.log("isFinish value:", newGame?.isFinish)
 })
 
 watch(socket_id, (newSocket) => {

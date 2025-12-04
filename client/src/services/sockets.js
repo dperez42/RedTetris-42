@@ -22,6 +22,14 @@ socket.on("disconnect", () => {
   // del player in game
   state.connected = false;
 });
+socket.on("error", (data) => {
+  console.error("SOCKET: ERROR from server:", data)
+  if (data.message === 'game_not_found' || data.message === 'player_not_found') {
+    alert('La partida ya no existe. Serás redirigido a la página inicial.')
+    window.location.href = '/'
+  }
+});
+
 socket.on("red_tetris_client", async (data) => {
   if (import.meta.env.VITE_DEBUG==='true'){console.log("SOCKET: RECIEVE",data.data)}
   if (data.command==='info'){

@@ -143,13 +143,36 @@ class ClassTipo {
 	}
 	// rotate
 	rotate(field){
-		this.rotation++;
-		this.rotation = this.rotation % 4;
+		const oldRotation = this.rotation;
+		const oldData = this.data;
+		const oldWidth = this.width;
+		const oldHeight = this.height;
+		const oldX = this.x;
+
+		this.rotation = (this.rotation + 1) % 4;
 		this.data = tetriminios[this.index_piece].rotation[this.rotation]
+		this.width = this.data[0].length
+		this.height = this.data.length
+
 		if (this.checkCollision(field)){
-			this.rotation -= 1;
-			this.rotation = this.rotation % 4;
-			this.data = tetriminios[this.index_piece].rotation[this.rotation]
+			// Try wall kick: push left
+			this.x -= 1;
+			if (this.checkCollision(field)){
+				// Try push left more
+				this.x -= 1;
+				if (this.checkCollision(field)){
+					// Try push right instead
+					this.x = oldX + 1;
+					if (this.checkCollision(field)){
+						// All wall kicks failed, revert everything
+						this.x = oldX;
+						this.rotation = oldRotation;
+						this.data = oldData;
+						this.width = oldWidth;
+						this.height = oldHeight;
+					}
+				}
+			}
 		}
 	}
 	// right

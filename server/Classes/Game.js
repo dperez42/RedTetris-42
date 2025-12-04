@@ -181,6 +181,8 @@ class Game {
 		this.intervalGame = null
 		this.isCountdown = false
 		this.isPause = false
+		this.isFinish = false
+		console.log("GAME INIT: isFinish set to", this.isFinish)
 		this.countdown = 5
 		this.intervalCountdown = null
 		/// init players
@@ -191,6 +193,7 @@ class Game {
 			player.addFirstPiece(this.list_pieces)
 		});
 		// send update
+		console.log("GAME INIT: Sending update with isFinish =", this.isFinish)
 		this.sendUpdate(io)
 	}
 	setmode(mode, ghost_mode){

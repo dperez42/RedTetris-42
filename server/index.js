@@ -175,30 +175,54 @@ io.on("connection", async (socket) => {
       if (process.env.DEBUG=== 'true') {console.log("INDEX: IO: Recieve startCountdown", data.gameName)}
       // search game by name
       const game = redtetris.getGame(data.gameName)
+      if (!game) {
+        console.error("INDEX: IO: Game not found:", data.gameName)
+        socket.emit('error', { message: 'game_not_found', gameName: data.gameName })
+        return
+      }
       game.setmode(data.mode, data.ghost_mode)
       //console.log("IO: game",game)
-      game.startCountdown(io)      
+      game.startCountdown(io)
     }
     if (data.command==='pause'){
       if (process.env.DEBUG=== 'true') {console.log("INDEX: IO: Recieve pause", data.gameName)}
       // search game by name
       const game = redtetris.getGame(data.gameName)
-      game.pause()      
+      if (!game) {
+        console.error("INDEX: IO: Game not found:", data.gameName)
+        socket.emit('error', { message: 'game_not_found', gameName: data.gameName })
+        return
+      }
+      game.pause()
     }
     if (data.command==='restart'){
       if (process.env.DEBUG=== 'true') {console.log("INDEX: IO: Recieve restart", data.gameName)}
       // search game by name
       const game = redtetris.getGame(data.gameName)
-      game.init(io)      
+      if (!game) {
+        console.error("INDEX: IO: Game not found:", data.gameName)
+        socket.emit('error', { message: 'game_not_found', gameName: data.gameName })
+        return
+      }
+      game.init(io)
     }
     if (data.command==='move'){
       if (process.env.DEBUG=== 'true') {console.log("NDEX: IO: Recieve move", data)}
       // search game by name
       const game = redtetris.getGame(data.gameName)
+      if (!game) {
+        console.error("INDEX: IO: Game not found:", data.gameName)
+        socket.emit('error', { message: 'game_not_found', gameName: data.gameName })
+        return
+      }
       const ghost_mode = game.getGhostMode()
       //console.log(game)
       const player = game.getPlayerBySocket(data.playerSocket)
-      //console.log(player)
+      if (!player) {
+        console.error("INDEX: IO: Player not found:", data.playerSocket)
+        socket.emit('error', { message: 'player_not_found', playerSocket: data.playerSocket })
+        return
+      }
       player.movePiece(data.move,1,[],ghost_mode)
       // send update msg to all player in the game
       game.sendUpdate(io)

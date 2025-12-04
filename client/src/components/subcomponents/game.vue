@@ -38,12 +38,11 @@
         <h2>🧱 Game Over!</h2>
         <p>Your score: {{ game.score }}</p>
         <button
-          v-if="type"
           class="start-button"
           @click="clickReStart"
           @keydown.space.prevent
         >
-          Start
+          Restart Game
         </button>
       </div>
     </div>
@@ -256,5 +255,27 @@ const clickReStart = () => {
   100% {
     box-shadow: 0 0 125px rgba(0, 255, 255, 0.9);
   }
+}
+.start-button {
+  margin-top: 20px;
+  padding: 12px 30px;
+  font-size: 1.1em;
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+  color: #000;
+  background: linear-gradient(135deg, #0ff, #0af);
+  border: 2px solid #0ff;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+}
+.start-button:hover {
+  background: linear-gradient(135deg, #0af, #0ff);
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.9);
+  transform: scale(1.05);
+}
+.start-button:active {
+  transform: scale(0.95);
 }
 </style>
