@@ -1,4 +1,4 @@
-const { Socket } = require("socket.io")
+//const { Socket } = require("socket.io")
 const Score = require("./Score.js");
 
 class Games {
@@ -45,8 +45,6 @@ class Games {
 	getGameBySocket(socket){
 		let search_game = false
 		for (let i = 0; i < this.games.length; i++) {
-			//console.log("searching game")
-			// check if socket id is in this.sockets = []
 			if (this.games[i].sockets.includes(socket)) {
 				search_game = this.games[i]
 				break

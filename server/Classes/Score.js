@@ -1,3 +1,10 @@
+//
+// Class to save scores:
+// saveResult (save a new score)
+// loadResult (load old scores in results)
+// calcRanking (order results by score and put in ranking)
+// getRanking (getter ranking list)
+
 const fs = require("fs");
 const path = require("path");
 
@@ -56,6 +63,7 @@ class Score {
 			return [];
 		  }
 	}
+	// orden results by score
 	calcRanking(){
 		// Objeto acumulador de scores por jugador
 		const scores = {};

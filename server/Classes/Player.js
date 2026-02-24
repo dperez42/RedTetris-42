@@ -1,8 +1,9 @@
+// Class for player data: name, cocket, board, score, freeze_lines, the number of piece playing and the piece playing
+
 const Piece = require("./Piece.js");
 
 class ClassTipo {
     constructor(sizeColumn, sizeRow, name, socket) { 
-		//console.log("init class Player")
 		this.sizeColumn = sizeColumn
 		this.sizeRow = sizeRow
 		this.name = name
@@ -13,13 +14,13 @@ class ClassTipo {
 		this.field = Array.from({ length: sizeRow }, () => Array(sizeColumn).fill(0));
 		// campo con piezas fijas + movil
 		this.field_piece = Array.from({ length: sizeRow }, () => Array(sizeColumn).fill(0));
-		
-		//console.log(this.field_piece)
 		this.score = 0
 		this.freeze_lines = 0
 		this.gameOver = false
 	}
+	// Init Player data
 	init(){
+		// roder number of piece to play
 		this.nb_piece = 1
 		// campo con piezas fijas
 		this.field = Array.from({ length: this.sizeRow }, () => Array(this.sizeColumn).fill(0));
@@ -29,12 +30,13 @@ class ClassTipo {
 		this.freeze_lines = 0
 		this.gameOver = false
 	}
+	// add first piece oject
 	addFirstPiece(list_pieces){
-		// recrear una instancia real de Piece
 		const newPiece = new Piece();
 		newPiece.firstPiece(list_pieces)
 		this.piece = newPiece;
 	}
+	// Move Piece
 	movePiece(move, step, list_pieces, ghost_mode){
 		if (!this.gameOver){
 			this.penalty_lines = 0
@@ -44,11 +46,9 @@ class ClassTipo {
 			if (move==='ArrowDown') {this.piece.softDrop(this.field)}
 			if (move===' ') {this.piece.hardDrop(this.field)}
 			if (move==='down') {this.piece.down(step,list_pieces, this.field, this.freeze_lines)}
-			//if (move==='Scape') {this.piece.right()}
 			this.nb_piece = this.piece.getNb_piece()
 			this.score = this.piece.getScore()
 			this.penalty_lines = this.piece.getPenaltyLines()
-			//console.log("player penalty:",this.penalty_lines)
 			this.gameOver = this.piece.getGameOver()
 			if (this.gameOver){
 				console.log("GAME OVER")
@@ -57,6 +57,7 @@ class ClassTipo {
 		}
 		return
 	}
+	// Merge the borad with the piece
 	merge(ghost_mode){
 		let field_temp = Array.from({ length: this.sizeRow }, () => Array(this.sizeColumn).fill(0));
 		for (let i = 0; i < this.sizeRow; i++){

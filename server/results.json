@@ -138,5 +138,33 @@
         "score": 1
       }
     ]
+  },
+  {
+    "winner": "daniel",
+    "date": "2026-02-23T21:09:41.194Z",
+    "players": [
+      {
+        "name": "daniel",
+        "score": 1
+      },
+      {
+        "name": "daniel2",
+        "score": 0
+      }
+    ]
+  },
+  {
+    "winner": "daniel2",
+    "date": "2026-02-24T19:34:10.912Z",
+    "players": [
+      {
+        "name": "daniel",
+        "score": 0
+      },
+      {
+        "name": "daniel2",
+        "score": 1
+      }
+    ]
   }
 ]

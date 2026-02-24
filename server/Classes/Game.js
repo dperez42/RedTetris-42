@@ -4,14 +4,12 @@ const path = require("path");
 
 class Game {
 	constructor(name, score) { 
-		//console.log("init class Game")
 		this.name = name
 		this.sockets = []
 		this.players = []
 		// add pieces to list this.list_pieces = []
-		//console.log(` creating initial list of pieces ...`);
 		this.list_pieces = []
-		this.addPieces(20)
+		this.addPieces(20) //load first 20 pieces
 		this.score = score
 		this.isStart = false
 		this.isFinish = false
@@ -28,16 +26,16 @@ class Game {
 	}
 
 	gamelogic(io){
-		//console.log("exec game logic")
-		// check if pause
+		// check if not in pause
 		if (!this.isPause){
 			let nb_online_players = 0 
-			// move pieces
+			// Move pieces
 			this.players.forEach(player => {
 				player.movePiece('down', 1, this.list_pieces, this.ghost_mode)
 			});
+			// Check players status
 			this.players.forEach(player => {
-				// check list of pieces if more pieces are needed
+				// check list of pieces and if more pieces are needed
 				if (player.getNbpiece()>this.list_pieces.length-10){
 					this.addPieces(20)
 				}
@@ -45,7 +43,6 @@ class Game {
 				const lines = player.getPenaltyLines()
 				if (lines>0){
 					// add penalty lines to thres users
-					//console.log("pppppppenalty")
 					this.players.forEach(player2 => {
 						if (player.socket !== player2.socket){
 							player2.addFreezeLines(lines)
@@ -53,7 +50,7 @@ class Game {
 					})
 				}
 				// numbers of player gameover
-				console.log("checking status", player.getStatusPlayer())
+				//console.log("checking status", player.getStatusPlayer())
 				if (!player.getStatusPlayer()){
 					nb_online_players++
 					this.winner = player.name
@@ -86,12 +83,10 @@ class Game {
 						winner: this.winner,
 						players: this.players
 					};
-					// only save results in varios players
-					console.log("saving")
+					// only save results with many players
 					this.score.saveResult(result)
 					// to display pop up 
 					this.sendUpdate(io)
-					console.log("saving2")
 					return
 				}
 			}		
@@ -101,10 +96,10 @@ class Game {
 			this.sendUpdate(io)
 		}
 	}
+	// Send game update
 	sendUpdate(io){
 		const data ={}
 				data.name =this.name
-				//data.sockets = this.sockets 
 				data.players = this.players
 				data.list_pieces = this.list_pieces 
 				data.ranking = this.score.getRanking() 
@@ -112,7 +107,6 @@ class Game {
 				data.isFinish = this.isFinish
 				data.winner = this.winner 
 				data.winner_socket = this.winner_socket
-				//data.intervalGame = this.intervalGame 
 				data.gravity = this.gravity 
 				data.isCountdown = this.isCountdown 
 				data.countdown = this.countdown 
@@ -126,7 +120,6 @@ class Game {
 		this.sockets.forEach(socketId => {
 			const socket = io.sockets.sockets.get(socketId);
 			if (socket) {
-				//console.log(data)
 				socket.emit('red_tetris_client', msg);
 			} else {
 			  console.warn(`Socket not found: ${socketId}`);
@@ -134,15 +127,15 @@ class Game {
 		});
 		return msg
 	}
+	// Start game
 	start(seed,io){
-		console.log(` starting game with seed ${seed} ...`);
+		console.log(`Starting game with seed ${seed} ...`);
 		this.isStart = true
 		// send message of start
 		// 🔥 Send update to each socket in this.sockets
 		this.sockets.forEach(socketId => {
 			const socket = io.sockets.sockets.get(socketId);
 			if (socket) {
-				console.log(`sending ${socket}`)
 				const msg = {
 					'command':'start',
 					'isStart': this.isStart,
@@ -153,7 +146,6 @@ class Game {
 			}
 		});
 		// add first piece to all
-		//console.log(this.list_pieces)
 		this.players.forEach(player => {
 			player.addFirstPiece(this.list_pieces)
 		});
@@ -161,26 +153,26 @@ class Game {
 		this.sendUpdate(io)
 
 		// start interval of game logic
-		console.log("starting game",this.gravity)
 		this.intervalGame = setInterval(() => {
-			//this.countGame--
-			//console.log("interval", this.gravity)
 			this.gamelogic(io)
 		},this.gravity)
 		return true
 	}
+	// Pause game
 	pause(){
-		console.log("game pause")
+		console.log("Game pause")
 		this.isPause = !this.isPause
 	}
+	// Init Game
 	init(io){
 		clearInterval(this.intervalGame)
 		/// init game general data
-		console.log("reinit Game")
+		console.log("Reinit Game")
 		this.isStart = false
 		this.intervalGame = null
 		this.isCountdown = false
 		this.isPause = false
+		this.isFinish = false
 		this.countdown = 5
 		this.intervalCountdown = null
 		/// init players
@@ -193,12 +185,14 @@ class Game {
 		// send update
 		this.sendUpdate(io)
 	}
+	// Set mode game
 	setmode(mode, ghost_mode){
 		this.gravity=mode,
 		this.ghost_mode=ghost_mode
 	}
+	// Start Countdown
 	startCountdown(io){
-		console.log(`Countdown of ${this.name}: ${this.countdown}`);
+		console.log(`Start Countdown of ${this.name}: ${this.countdown}`);
 		if (this.isCountdown) return; // evita múltiples countdowns
 		this.isCountdown = true
 		this.intervalCountdown = setInterval(() => {
@@ -209,7 +203,6 @@ class Game {
 			this.sockets.forEach(socketId => {
 				const socket = io.sockets.sockets.get(socketId);
 				if (socket) {
-					console.log(`sending ${socket}`)
 					const msg = {
 						'command':'countdown',
 						'isCountdown': this.isCountdown,
@@ -230,7 +223,6 @@ class Game {
 				this.sockets.forEach(socketId => {
 					const socket = io.sockets.sockets.get(socketId);
 					if (socket) {
-						console.log(`sending ${socket}`)
 						const msg = {
 							'command':'countdown',
 							'isCountdown': this.isCountdown,
@@ -247,6 +239,7 @@ class Game {
 		  }, 1000);
 		  return true
 	}
+	// Check if player name exist
 	checkPlayer(player_name){
 		let ex = false
 		this.players.forEach(player => {
@@ -256,7 +249,7 @@ class Game {
 		});
 		return ex
 	}
-	//add player to game
+	// Add new palyer to game
 	addPlayer(player, socket){
 		// Add player in players[]
 		this.players.push(player)
@@ -267,21 +260,21 @@ class Game {
 		}
 		return
 	}
-	//delete a player from a game by name
+	// Delete a player from a game by name
 	delPlayer(player_name){
 		// Delete player by name in players[]
 		const filtered = this.players.filter(item => item.name !==player_name) // remove an element with specified valu
 		this.players = filtered
 		return
 	}
-	//get player by socket_id
+	// Get player by socket_id
 	getPlayerBySocket(socket_id){
 		for (let i = 0; i < this.players.length; i++){
 			if (this.players[i].socket === socket_id) return this.players[i]
 		}
 		return null
 	}
-	//delete a player from a game by socket.id (in player list and socket list)
+	// Delete a player from a game by socket.id (in player list and socket list)
 	delPlayerBySocket(socket){
 		// Delete player by socket in players[]
 		const filtered = this.players.filter(item => item.socket !== socket) // remove an element with specified valu
@@ -295,6 +288,7 @@ class Game {
 		}
 		return
 	}
+	// Add nb pieces to list
 	addPieces(nb){
 		for (let i = 0; i < nb; i++) {
 			const piece = {}
@@ -304,11 +298,7 @@ class Game {
 			piece.rotation = Math.floor(Math.random() * 4)
 			piece.color = 1 + Math.floor(Math.random() * 5)
 			this.list_pieces.push(piece)
-			//console.log("añado piece a game")
-			//piece.print()
 		}
-		//console.log("list of pieces")
-		//console.log(this.list_pieces)
 	}
 	/// getters
 	info(){
