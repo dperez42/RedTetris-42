@@ -116,6 +116,13 @@
       <div class="popup_countdown">    
         <h1>{{ game.name }}</h1>
         <h3 class="popup_count">{{game.winner_socket === socket_id && !game.isOnePlayer ? 'YOU WIN':'The game is finish'}}</h3>
+        <button
+          v-if="game.players[0].socket == socket_id"
+          class="start-button"
+          @click="clickReStart()"
+          @keydown.space.prevent>
+          Restart Game
+        </button>
       </div>
     </div>
     <!-- pop up ranking -->
@@ -596,7 +603,7 @@ const clickPause = () => {
 }
 
 const clickReStart = () => {
-  console.log("click ReStart")
+  //console.log("click ReStart")
   const msg = {
     command: 'restart',
     gameName: game.value.name,
@@ -627,7 +634,7 @@ const clickRanking = () => {
 
 const keyHandler = (event) => {
   if (!game.value?.isPause) {
-    if(['ArroDown', 'ArrowUp', 'ArrowRight', 'ArrowLeft', ' ', 'Escape'].indexOf(event.key) > -1) {
+    if(['ArrowDown', 'ArrowUp', 'ArrowRight', 'ArrowLeft', ' ', 'Escape'].indexOf(event.key) > -1) {
       if (import.meta.env.VITE_DEBUG==='true'){console.log("HOME: keyPress:", event.key)}
       const msg = {
         command: 'move',
@@ -655,6 +662,7 @@ const handleSubmit = () => {
 //Watchers
 watch(game, (newGame) => {
   console.log("Game change:", newGame)
+  console.log("isFinish value:", newGame?.isFinish)
 })
 
 watch(socket_id, (newSocket) => {

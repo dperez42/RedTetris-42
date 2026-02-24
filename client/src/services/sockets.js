@@ -7,7 +7,6 @@ export const state = reactive({
 });
 
 const serverURL = import.meta.env.VITE_SERVER_URL===undefined ? 'http://localhost:3000':import.meta.env.VITE_SERVER_URL;
-//const serverURL = 'http://localhost:3000'
 export const socket = io(serverURL,{extraHeaders: { }})
 
 socket.on("connect", () => {
@@ -17,10 +16,14 @@ socket.on("connect", () => {
 });
 socket.on("disconnect", () => {
   if (import.meta.env.VITE_DEBUG==='true'){console.log("SOCKET: socket disconneted")}
-  // remove player from games
-  //getGame_socketId(socket_id
-  // del player in game
   state.connected = false;
+});
+socket.on("error", (data) => {
+  console.error("SOCKET: ERROR from server:", data)
+  if (data.message === 'game_not_found' || data.message === 'player_not_found') {
+    alert('La partida ya no existe. Serás redirigido a la página inicial.')
+    window.location.href = '/'
+  }
 });
 socket.on("red_tetris_client", async (data) => {
   if (import.meta.env.VITE_DEBUG==='true'){console.log("SOCKET: RECIEVE",data.data)}
@@ -45,6 +48,5 @@ socket.on("red_tetris_client", async (data) => {
   }
   if (data.command==='test'){
     if (import.meta.env.VITE_DEBUG==='true'){console.log("SOCKET: TEST:", data)}
-    //store.commit("games_store/setGame", data.data)
   }
 });
