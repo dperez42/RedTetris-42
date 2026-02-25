@@ -29,7 +29,7 @@ describe('Score', function () {
     });
     describe('get ranking', function () {
         let score = new Score('results_test.json')
-        console.log(score.ranking)
+        //console.log(score.ranking)
         it ('Should be able to give the ranking of a Score object', function() {     
               assert.equal(JSON.stringify(score.getRanking()), JSON.stringify([{"name":"test_plggayer10","Score":6},{"name":"test_playgger2","Score":5},{"name":"test_player1","Score":5}]));
         });

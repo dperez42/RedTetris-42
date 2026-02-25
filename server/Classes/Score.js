@@ -80,7 +80,7 @@ class Score {
 		const ranking = Object.entries(scores)
 		.map(([name, Score]) => ({ name, Score }))
 		.sort((a, b) => b.Score - a.Score);
-	  	console.log("SCORE: Ranking calculado:", ranking);
+	  	// console.log("SCORE: Ranking calculado:", ranking);
 	  	this.ranking = ranking
 	}
 	// get ranking

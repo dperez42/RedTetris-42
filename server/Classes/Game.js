@@ -122,14 +122,14 @@ class Game {
 			if (socket) {
 				socket.emit('red_tetris_client', msg);
 			} else {
-			  console.warn(`Socket not found: ${socketId}`);
+			  //console.warn(`Socket not found: ${socketId}`);
 			}
 		});
 		return msg
 	}
 	// Start game
 	start(seed,io){
-		console.log(`Starting game with seed ${seed} ...`);
+		//console.log(`Starting game with seed ${seed} ...`);
 		this.isStart = true
 		// send message of start
 		// 🔥 Send update to each socket in this.sockets
@@ -142,7 +142,7 @@ class Game {
 				  }
 				socket.emit('red_tetris_client', msg);
 			} else {
-			  console.warn(`Socket not found: ${socketId}`);
+			  //console.warn(`Socket not found: ${socketId}`);
 			}
 		});
 		// add first piece to all
@@ -160,14 +160,14 @@ class Game {
 	}
 	// Pause game
 	pause(){
-		console.log("Game pause")
+		//console.log("Game pause")
 		this.isPause = !this.isPause
 	}
 	// Init Game
 	init(io){
 		clearInterval(this.intervalGame)
 		/// init game general data
-		console.log("Reinit Game")
+		//console.log("Reinit Game")
 		this.isStart = false
 		this.intervalGame = null
 		this.isCountdown = false
@@ -192,7 +192,7 @@ class Game {
 	}
 	// Start Countdown
 	startCountdown(io){
-		console.log(`Start Countdown of ${this.name}: ${this.countdown}`);
+		//console.log(`Start Countdown of ${this.name}: ${this.countdown}`);
 		if (this.isCountdown) return; // evita múltiples countdowns
 		this.isCountdown = true
 		this.intervalCountdown = setInterval(() => {
@@ -210,7 +210,7 @@ class Game {
 					  }
 					socket.emit('red_tetris_client', msg);
 				} else {
-				  console.warn(`Socket not found: ${socketId}`);
+				  //console.warn(`Socket not found: ${socketId}`);
 				}
 			  });
 			if (this.countdown <= 0) {
@@ -230,7 +230,7 @@ class Game {
 						}
 						socket.emit('red_tetris_client', msg);
 					} else {
-					console.warn(`Socket not found: ${socketId}`);
+						//console.warn(`Socket not found: ${socketId}`);
 					}
 				});
 			  // 🔥 start game
