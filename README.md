@@ -37,7 +37,7 @@ With command:
 
 Then in the browser type:
 
-**http://localhost:3000/<room>/<player_name>**
+**http://localhost:3000/room/player_name**
 
 room: Name of the game to join.
 player_name: Player’s name.
