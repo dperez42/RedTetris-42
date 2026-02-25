@@ -1,34 +1,5 @@
 <template>
 <div class="container">
-  
-  <div v-if="debug==='true' && game===null">
-    here{{game}}here
-    <form @submit.prevent="handleSubmit" class="form">
-      <div class="form-group">
-        <label for="roomName">Room Name</label>
-        <input  
-          id="roomName"
-          v-model="roomName"
-          type="text"
-          placeholder="Enter room name"
-          required
-        />
-      </div>
-      <div class="form-group">
-        <label for="player">Player Name</label>
-        <input  class="input"
-          id="playerName"
-          v-model="playerName"
-          type="text"
-          placeholder="Your name"
-          required
-        />
-      </div>
-      <button class="button" type="submit"> join </button>
-    </form>
-    {{socket_id}}
-  </div>
-  
   <div v-if="error.data==='NOT PARAMETERS'">
     <Info :title="'Sorry, To enter in a Game!'" :title1="'type:'" :title2="'http://server_name_or_ip:3000/room/player_name'"/>
   </div>

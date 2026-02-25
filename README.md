@@ -68,3 +68,6 @@ You will get 4 metrics:
 - Branches: coverage rate of code execution paths
 
 ![alt text](https://github.com/dperez42/RedTetris-42/blob/main/pictures/Captura_testing.png?raw=true)
+
+<h5>Custom</h5>
+If you want to change the front. Enter in the client container, run "npm run build", go client directory and copy "dist" directory and replace "dist" in the server directory.
