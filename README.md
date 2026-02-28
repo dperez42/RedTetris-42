@@ -65,10 +65,10 @@ A game can be played with one player.
 Multiple concurrent games are supported.
 
 <h3>Controls</h3>
-<h4>Left/Right arrows:</h4> Move piece horizontally.
-<h4>Up arrow:</h4> Rotate piece.
-<h4>Down arrow:</h4> Soft drop.
-<h4>Spacebar:</h4> Hard drop to fill a gap.
+<h4>Left/Right arrows: Move piece horizontally.</h4>
+<h4>Up arrow: Rotate piece.</h4>
+<h4>Down arrow: Soft drop.</h4>
+<h4>Spacebar: Hard drop to fill a gap.</h4>
 
 <h2>Features</h2>
 <h5>Testing</h5>
