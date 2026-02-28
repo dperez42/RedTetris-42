@@ -81,6 +81,8 @@ cd client
 echo "${Cyan}Copy build solution to Server${Nc}"
 cd ..
 cp -r client/dist server/
-echo "${Cyan}Start Server${Nc}"
+echo "${Cyan}Buildingr${Nc}"
 docker-compose build
+echo "${Cyan}Deploying${Nc}"
 docker-compose up
+echo "${Cyan}Start Server${Nc}"
