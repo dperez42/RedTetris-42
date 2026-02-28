@@ -48,9 +48,10 @@ Then in the browser type:
 **http://server_ip:3000/room/player_name**
 
 room: Name of the game to join.
+
 player_name: Player’s name.
 
-You can play in any ip in the same network.
+**You can play in any ip in the same network.**
 
 The first player to join becomes the host and controls when to start or restart the game.
 
