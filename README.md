@@ -36,12 +36,12 @@ With command:
 **sh start.sh**
 
 This will:
-- Get your IP, it will show in the console.
-- Rewrite the client .env file
+- Get your IP (it will show in the console).
+- Rewrite the Client .env file.
 - Build the Client solution.
-- Copy dist directory in Client to Server
+- Copy dist directory in Client to Server.
 - Docker-compose build
-- Docker-composr up
+- Docker-compose up
 
 Then in the browser type:
 
@@ -54,13 +54,21 @@ You can play in any ip in the same network.
 
 The first player to join becomes the host and controls when to start or restart the game.
 
-If the current host leave the game, one of the remaining players will take this role. Once started, no new players can join until the next round.
+If the current host leave the game, one of the remaining players will take this role. 
+
+Once started, no new players can join until the next round.
 
 Games end when one player remains.
 
 A game can be played with one player.
 
 Multiple concurrent games are supported.
+
+<h3>Controls</h3>
+<h4>Left/Right arrows:</h4> Move piece horizontally.
+<h4>Up arrow:</h4> Rotate piece.
+<h4>Down arrow:</h4> Soft drop.
+<h4>Spacebar:</h4> Hard drop to fill a gap.
 
 <h2>Features</h2>
 <h5>Testing</h5>
