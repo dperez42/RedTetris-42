@@ -33,14 +33,24 @@ The last remaining player is the winner. The game supports both solo and multipl
 <h2>How to start</h2>
 With command:
 
-**docker-compose up**
+**sh start.sh**
+
+This will:
+- Get your IP, it will show in the console.
+- Rewrite the client .env file
+- Build the Client solution.
+- Copy dist directory in Client to Server
+- Docker-compose build
+- Docker-composr up
 
 Then in the browser type:
 
-**http://localhost:3000/room/player_name**
+**http://server_ip:3000/room/player_name**
 
 room: Name of the game to join.
 player_name: Player’s name.
+
+You can play in any ip in the same network.
 
 The first player to join becomes the host and controls when to start or restart the game.
 
