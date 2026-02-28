@@ -64,7 +64,7 @@ A game can be played with one player.
 
 Multiple concurrent games are supported.
 
-<h3>Controls</h3>
+<h2>Controls</h2>
 <h4>Left/Right arrows: Move piece horizontally.</h4>
 <h4>Up arrow: Rotate piece.</h4>
 <h4>Down arrow: Soft drop.</h4>
