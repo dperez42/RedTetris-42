@@ -632,16 +632,16 @@ const handleSubmit = () => {
 
 //Watchers
 watch(game, (newGame) => {
-  console.log("Game change:", newGame)
-  console.log("isFinish value:", newGame?.isFinish)
+  if (import.meta.env.VITE_DEBUG==='true'){console.log("Game change:", newGame)}
+  if (import.meta.env.VITE_DEBUG==='true'){console.log("isFinish value:", newGame?.isFinish)}
 })
 
 watch(socket_id, (newSocket) => {
-  console.log("Socket change:", newSocket)
+  if (import.meta.env.VITE_DEBUG==='true'){console.log("Socket change:", newSocket)}
 })
 
 watch(error, (newError) => {
-  console.log("Error change:", newError)
+  if (import.meta.env.VITE_DEBUG==='true'){console.log("Error change:", newError)}
 })
 
 //Lyfecycle

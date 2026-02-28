@@ -1,2 +1,16 @@
 [
+  {
+    "winner": "pepe",
+    "date": "2026-02-28T19:39:28.934Z",
+    "players": [
+      {
+        "name": "dan",
+        "score": 0
+      },
+      {
+        "name": "pepe",
+        "score": 1
+      }
+    ]
+  }
 ]
