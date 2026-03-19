@@ -70,17 +70,17 @@ On_ICyan='\033[0;106m'    # Cyan
 On_IWhite='\033[0;107m'   # White
 
 # Get your ip excluding loopback (127.0.0.1)
-IP=$(ifconfig|grep "inet "|grep -v 127.0.0.1|awk '/inet / {print $2}')
+IP=$(ifconfig|grep "inet "|grep -v 127.0.0.1|awk '/inet / {print $2}'| awk 'NR==2') # get second ip from list
 echo "${Cyan}IP Address: $IP"
 echo "${Cyan}Updating client .env... with ypur ip${Nc}"
 cp ./client/.env.temp ./client/.env
 sed -i -e "s|SERVERIP|$IP|" client/.env 
 echo "${Cyan}Building Client solution${Nc}"
-cd client
+#cd client
 #npm run build 
 echo "${Cyan}Copy build solution to Server${Nc}"
-cd ..
-cp -r client/dist server/
+#cd ..
+#cp -r client/dist server/
 echo "${Cyan}Buildingr${Nc}"
 docker-compose build
 echo "${Cyan}Deploying${Nc}"

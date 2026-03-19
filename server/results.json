@@ -12,5 +12,33 @@
         "score": 1
       }
     ]
+  },
+  {
+    "winner": "tomartin",
+    "date": "2026-03-19T17:30:12.278Z",
+    "players": [
+      {
+        "name": "user1",
+        "score": 0
+      },
+      {
+        "name": "tomartin",
+        "score": 1
+      }
+    ]
+  },
+  {
+    "winner": "player3",
+    "date": "2026-03-19T18:42:51.231Z",
+    "players": [
+      {
+        "name": "player1",
+        "score": 0
+      },
+      {
+        "name": "player3",
+        "score": 1
+      }
+    ]
   }
 ]

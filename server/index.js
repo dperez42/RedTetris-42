@@ -245,7 +245,7 @@ io.on("connection", async (socket) => {
 app.disable('etag')
 
 // Static files FIRST (before routes), dist: client file, and html_errors
-app.use(express.static(path.join(__dirname, "dist"), {
+app.use(express.static(path.join(__dirname, "client/dist"), {
     cacheControl: false,
     etag: false,
   })
@@ -287,7 +287,7 @@ app.get("/:room/:user", (req, res) => {
     'Pragma': 'no-cache',
     'Expires': '0'
   });
-  return res.sendFile(path.resolve(__dirname, "dist","index.html"));
+  return res.sendFile(path.resolve(__dirname, "client/dist","index.html"));
   //return res.sendFile(path.resolve(__dirname, "html_error", "tetris_info.html"));
   
 });
