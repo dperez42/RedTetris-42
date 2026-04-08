@@ -97,7 +97,7 @@
       </div>
     </div>
     <!-- pop up ranking -->
-    <div v-if="game != null & ranking" class="overlay_countdown">
+    <div v-if="game != null & !game.isCountdown & ranking" class="overlay_countdown">
       <div class="popup_ranking">
         <h1 class="ranking-title">🏆 HALL OF FAME 🏆</h1>
         <div class="ranking-wrapper crt-overlay">
@@ -185,7 +185,7 @@
   justify-content: center;
   align-items: center;
   /*background-color: rgb(173, 37, 37);*/
-  background: url('../../public/tetris_bg.jpeg') center/cover no-repeat;
+  background: url('../assets/BG_Tetris.png') center/cover no-repeat;
 }
 
 .board-wrapper {

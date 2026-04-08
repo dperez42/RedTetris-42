@@ -1,4 +1,4 @@
-FROM node:latest as build-stage
+FROM node:latest AS build-stage
 
 # ENV NODE_ENV=development 
 # ENV NODE_ENV=production
@@ -37,7 +37,7 @@ COPY . .
 RUN npm run build
 
 # DEVELOPMENT STAGE
-FROM build-stage as dev-stage
+FROM build-stage AS dev-stage
 EXPOSE 8010
 # Enable polling for file changes in Docker (esp. for Mac/Windows)
 ENV CHOKIDAR_USEPOLLING=true

@@ -1,4 +1,3 @@
-version: '3.7'
 networks:
   redtetris_network:
     driver: bridge

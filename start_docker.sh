@@ -70,11 +70,19 @@ On_ICyan='\033[0;106m'    # Cyan
 On_IWhite='\033[0;107m'   # White
 
 # Get your ip excluding loopback (127.0.0.1)
-IP=$(ifconfig|grep "inet "|grep -v 127.0.0.1|awk '/inet / {print $2}'| awk 'NR==2') # get second ip from list
+# IP in linux
+#IP=$(ifconfig|grep "inet "|grep -v 127.0.0.1|awk '/inet / {print $2}'| awk 'NR==2') # get second ip from list
+# IP from windows running wsl
+IP=$(ifconfig|grep "inet "|grep -v 127.0.0.1|awk '/inet / {print $2}'| awk 'NR==1' | awk '{print substr($0, 6)}')
 echo "${Cyan}IP Address: $IP"
-echo "${Cyan}Updating client .env... with ypur ip${Nc}"
-cp ./client/.env.temp ./client/.env
-sed -i -e "s|SERVERIP|$IP|" client/.env 
+echo "${Cyan}Updating client .env with your ip: $IP ${Nc}"
+#cp ./server/client/.env.temp ./server/client/.env
+
+# linux
+#sed -i -e "s|SERVERIP|$IP|" ./server/client/.env 
+#windows
+#sed -i -e "s|SERVERIP|${IP}|" ./server/client/.env
+
 echo "${Cyan}Building Client solution${Nc}"
 #cd client
 #npm run build 

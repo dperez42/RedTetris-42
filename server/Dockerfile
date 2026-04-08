@@ -1,7 +1,7 @@
 #####################################
 # 🧱 Base Stage (Shared setup)
 #####################################
-FROM node:21.5-alpine as base-stage
+FROM node:21.5-alpine AS base-stage
 
 # Set working directory
 WORKDIR /app
@@ -17,7 +17,7 @@ RUN npm cache clean --force
 # =========================
 # 🔧 Development Stage
 # =========================
-FROM base-stage as dev-stage
+FROM base-stage AS dev-stage
 # Copy everything for live dev ()
 COPY . .
 # nodemon for develop
@@ -45,7 +45,7 @@ COPY . .
 # =============================
 # 🚀 Production Stage
 # =============================
-FROM build-stage as prod-stage
+FROM build-stage AS prod-stage
 
 COPY --from=build-stage /app/dist ./dist
 

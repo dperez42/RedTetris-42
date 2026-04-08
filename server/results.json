@@ -40,5 +40,19 @@
         "score": 1
       }
     ]
+  },
+  {
+    "winner": "player",
+    "date": "2026-04-08T20:12:10.944Z",
+    "players": [
+      {
+        "name": "player1",
+        "score": 1
+      },
+      {
+        "name": "player",
+        "score": 1
+      }
+    ]
   }
 ]

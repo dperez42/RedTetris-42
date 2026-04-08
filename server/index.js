@@ -43,7 +43,7 @@ io.on("connection", async (socket) => {
   }
   socket.emit('red_tetris_client',msg)
   if (process.env.DEBUG=== 'true') {console.log("INDEX: IO: Client Connected From", socket.handshake.headers.referer, socket.id)};
-  if (process.env.DEBUG==='false'){
+  
     const url_data = socket.handshake.headers.referer.split('/')
     // check parameters
     if (url_data.length !== 5){
@@ -128,7 +128,7 @@ io.on("connection", async (socket) => {
           }
         }
     }
-  }
+  
   // 
   socket.on("red_tetris_server", async (data) => {
     if (process.env.DEBUG=== 'true') {console.log("INDEX: IO: msg recieved in red-tetris server from ",socket.id,".",data)}
