@@ -12,6 +12,7 @@ package-lock.json
 .env
 .env.local
 .env.*.local
+.html
 
 # Build outputs
 dist/
@@ -26,8 +27,8 @@ logs/
 # Testing
 coverage/
 .nyc_output/
-results_test.json
-results_test_save.json
+#results_test.json
+#results_test_save.json
 results.json
 
 # OS files
