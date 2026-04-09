@@ -37,14 +37,6 @@
       <div class="popup_gameover">
         <h2>🧱 Game Over!</h2>
         <p>Your score: {{ game.score }}</p>
-        <button
-          v-if="type"
-          class="start-button"
-          @click="clickReStart"
-          @keydown.space.prevent
-        >
-          Start
-        </button>
       </div>
     </div>
 
