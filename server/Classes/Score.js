@@ -40,6 +40,9 @@ class Score {
 		  fs.writeFileSync(this.resultsFile, JSON.stringify(results, null, 2));
 		  //console.log("✅ Game result saved:", result);
 		  // redo ranking & send
+	      //this.loadResult() 
+		  this.results.push(result)
+		  this.calcRanking()
 		  return true
 		} catch (err) {
 		  console.error("SCORE: Error saving result:", err);

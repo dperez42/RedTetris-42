@@ -98,6 +98,7 @@ class Game {
 	}
 	// Send game update
 	sendUpdate(io){
+		//console.log(this.score.getRanking())
 		const data ={}
 				data.name =this.name
 				data.players = this.players
