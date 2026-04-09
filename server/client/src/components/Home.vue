@@ -633,6 +633,9 @@ const handleSubmit = () => {
 //Watchers
 watch(game, (newGame) => {
   if (import.meta.env.VITE_DEBUG==='true'){console.log("Game change:", newGame)}
+  if (newGame.isStart){
+    ranking.value = false
+  }
   if (import.meta.env.VITE_DEBUG==='true'){console.log("isFinish value:", newGame?.isFinish)}
 })
 
