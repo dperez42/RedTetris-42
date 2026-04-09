@@ -71,9 +71,9 @@ On_IWhite='\033[0;107m'   # White
 
 # Get your ip excluding loopback (127.0.0.1)
 # IP in linux
-#IP=$(ifconfig|grep "inet "|grep -v 127.0.0.1|awk '/inet / {print $2}'| awk 'NR==2') # get second ip from list
+IP=$(ifconfig|grep "inet "|grep -v 127.0.0.1|awk '/inet / {print $2}'| awk 'NR==2') # get second ip from list
 # IP from windows running wsl
-IP=$(ifconfig|grep "inet "|grep -v 127.0.0.1|awk '/inet / {print $2}'| awk 'NR==1' | awk '{print substr($0, 6)}')
+#IP=$(ifconfig|grep "inet "|grep -v 127.0.0.1|awk '/inet / {print $2}'| awk 'NR==1' | awk '{print substr($0, 6)}')
 echo "${Cyan}IP Address: $IP"
 echo "${Cyan}Updating client .env with your ip: $IP ${Nc}"
 cp ./server/client/.env.temp ./server/client/.env
