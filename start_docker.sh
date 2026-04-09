@@ -76,10 +76,10 @@ On_IWhite='\033[0;107m'   # White
 IP=$(ifconfig|grep "inet "|grep -v 127.0.0.1|awk '/inet / {print $2}'| awk 'NR==1' | awk '{print substr($0, 6)}')
 echo "${Cyan}IP Address: $IP"
 echo "${Cyan}Updating client .env with your ip: $IP ${Nc}"
-#cp ./server/client/.env.temp ./server/client/.env
+cp ./server/client/.env.temp ./server/client/.env
 
 # linux
-#sed -i -e "s|SERVERIP|$IP|" ./server/client/.env 
+sed -i -e "s|SERVERIP|$IP|" ./server/client/.env 
 #windows
 #sed -i -e "s|SERVERIP|${IP}|" ./server/client/.env
 
