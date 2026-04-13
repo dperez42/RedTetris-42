@@ -1,2 +1,16 @@
 [
+  {
+    "winner": "player2",
+    "date": "2026-04-13T14:58:02.262Z",
+    "players": [
+      {
+        "name": "player1",
+        "score": 0
+      },
+      {
+        "name": "player2",
+        "score": 1
+      }
+    ]
+  }
 ]

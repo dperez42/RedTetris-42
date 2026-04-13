@@ -75,6 +75,8 @@ IP=$(ifconfig|grep "inet "|grep -v 127.0.0.1|awk '/inet / {print $2}'| awk 'NR==
 # IP from windows running wsl
 #IP=$(ifconfig|grep "inet "|grep -v 127.0.0.1|awk '/inet / {print $2}'| awk 'NR==1' | awk '{print substr($0, 6)}')
 echo "${Cyan}IP Address: $IP"
+#exit 0
+
 echo "${Cyan}Updating client .env with your ip: $IP ${Nc}"
 cp ./server/client/.env.temp ./server/client/.env
 
