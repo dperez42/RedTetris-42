@@ -91,7 +91,7 @@ echo "${Cyan}Building Client solution${Nc}"
 echo "${Cyan}Copy build solution to Server${Nc}"
 #cd ..
 #cp -r client/dist server/
-echo "${Cyan}Buildingr${Nc}"
+echo "${Cyan}Building${Nc}"
 docker-compose build
 echo "${Cyan}Deploying${Nc}"
 docker-compose up

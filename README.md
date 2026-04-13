@@ -80,6 +80,10 @@ To run test, enter in server container and type:
 
 **npm run test**
 
+or 
+
+**docker exec -it redtetris-server-1 sh**
+
 You will get 4 metrics:
 - Statements: statement coverage rate
 - Functions: functions coverage rate
